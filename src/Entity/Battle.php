@@ -7,12 +7,13 @@ class Battle
     /** @var Player[] */
     private $players;
     
-    private $state = 'place';
+    /** @var string */
+    private $currentState = 'start';
     
     /**
      * @return Player[]
      */
-    public function getPlayers()
+    public function getPlayers(): array
     {
         return $this->players;
     }
@@ -22,7 +23,7 @@ class Battle
      *
      * @return Battle
      */
-    public function setPlayers($players)
+    public function setPlayers(array $players): Battle
     {
         $this->players = $players;
         
@@ -32,19 +33,19 @@ class Battle
     /**
      * @return string
      */
-    public function getState()
+    public function getCurrentState(): string
     {
-        return $this->state;
+        return $this->currentState;
     }
     
     /**
-     * @param string $state
+     * @param string $currentState
      *
      * @return Battle
      */
-    public function setState($state)
+    public function setCurrentState(string $currentState): Battle
     {
-        $this->state = $state;
+        $this->currentState = $currentState;
         
         return $this;
     }

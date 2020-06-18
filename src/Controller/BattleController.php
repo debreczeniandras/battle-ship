@@ -2,24 +2,17 @@
 
 namespace App\Controller;
 
-use Pagerfanta\Adapter\ArrayAdapter;
-use Pagerfanta\Pagerfanta;
-use Swatch\Bundle\ApiBundle\Filter\RestPaginationParams;
-use Swatch\Bundle\ApiBundle\Form\Type\RestPaginationFilterType;
-use Swatch\Bundle\IntlBundle\Entity\Continent;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class BattleController extends AbstractController
 {
     /**
-     * @Route("/")
+     * @Rest\Get("start")
      */
-    public function index()
+    public function place()
     {
-        return new Response('asdfadsf');
-        
 //        $form = $this->createForm(RestPaginationFilterType::class);
 //        $form->submit($request->query->all(), false);
 //
