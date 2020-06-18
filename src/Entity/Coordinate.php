@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Entity;
+
 class Coordinate
 {
     /** @var int */

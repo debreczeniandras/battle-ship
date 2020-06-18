@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Entity;
+
 class Ship
 {
     /** @var Coordinate */

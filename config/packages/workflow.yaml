@@ -1,0 +1,24 @@
+framework:
+  workflows:
+    battle_ship:
+      type: 'state_machine'
+      audit_trail:
+        enabled: true
+      marking_store:
+        type: 'single_state'
+        arguments:
+          - 'currentState'
+      supports:
+        - App\Entity\Battle
+      initial_place: place
+      places:
+        - place
+        - started
+        - finished
+      transitions:
+        start:
+          from: place
+          to:   started
+        finish:
+          from: [shotA, shotB]
+          to:   finished

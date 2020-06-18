@@ -1,7 +1,9 @@
 <?php
 
+namespace App\Entity;
+
 class Player
 {
-    /** @var Ocean */
-    private $ocean;
+    /** @var Grid */
+    private $grid;
 }
