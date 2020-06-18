@@ -5,20 +5,19 @@ framework:
       audit_trail:
         enabled: true
       marking_store:
-        type: 'single_state'
-        arguments:
-          - 'currentState'
+        type: method
+        property: currentPlace
       supports:
         - App\Entity\Battle
-      initial_place: place
+      initial_marking: start
       places:
-        - place
+        - start
         - started
         - finished
       transitions:
-        start:
-          from: place
+        place:
+          from: start
           to:   started
         finish:
-          from: [shotA, shotB]
+          from: [started]
           to:   finished
