@@ -2,21 +2,22 @@
 
 namespace App\Form\Type;
 
-use App\Entity\Battle;
+use App\Entity\Coordinate;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class BattleType extends AbstractType
+class CoordinateType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('players', CollectionType::class, ['entry_type' => PlayerType::class]);
+        $builder->add('x', IntegerType::class);
+        $builder->add('y');
     }
     
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(['data_class' => Battle::class, 'csrf_protection' => false,]);
+        $resolver->setDefaults(['data_class' => Coordinate::class, 'csrf_protection' => false,]);
     }
 }

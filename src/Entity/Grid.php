@@ -16,6 +16,7 @@ class Grid
      * @var Ship[]
      *
      * @Groups({"place"})
+     * @Assert\Count(min="5", max="5")
      */
     private $ships;
     
@@ -38,5 +39,15 @@ class Grid
     public function addShot(Shot $shot)
     {
         $this->shots->add([$shot]);
+    }
+    
+    public static function XChoices()
+    {
+        return range(1, self::WIDTH);
+    }
+    
+    public static function YChoices()
+    {
+        return range(1, chr(65 + self::HEIGHT));
     }
 }

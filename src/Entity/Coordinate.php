@@ -14,6 +14,7 @@ class Coordinate
      *
      * @Groups({"place"})
      * @Assert\Type("integer")
+     * @Assert\Choice(callback={"App\Entity\Grid", "XChoices"})
      */
     private $x;
     
@@ -24,7 +25,7 @@ class Coordinate
      *
      * @Groups({"place"})
      * @Assert\Type("string")
-     * @Assert\Length(min="1", max="1")
+     * @Assert\Choice(callback={"App\Entity\Grid", "YChoices"})
      */
     private $y;
     

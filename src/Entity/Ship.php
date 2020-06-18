@@ -7,13 +7,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class Ship
 {
+    const CHOICES = ["carrier", "battleship", "cruiser", "submarine", "destroyer"];
+    
     /**
      * The id of the ship. Use one of the choices
      *
      * @var string
      *
-     * @Assert\Choice({"carrier", "battleship", "cruiser", "submarine", "destroyer"})
+     * @Assert\Choice(choices=Ship::CHOICES)
      * @Assert\NotBlank()
+     * @Assert\Unique()
      * @Groups({"place"})
      */
     private $id;
