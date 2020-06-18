@@ -1,0 +1,65 @@
+---
+
+- name: Set up Apache
+  hosts: localhost
+  become: yes
+  tasks:
+
+    - name: Install base packages
+      when: uname_result.stdout == 'Linux'
+      apt:
+        name: ['apache2', 'git']
+        update_cache: yes
+        state: latest
+
+    - name: Enable necessary apache modules
+      when: uname_result.stdout == 'Linux'
+      apache2_module:
+        state: present
+        name: "{{item}}"
+      with_items:
+        - rewrite
+        - proxy
+        - proxy_http
+        - proxy_balancer
+      notify:
+        - Restart apache2
+
+    - name: Change Apache run user
+      when: uname_result.stdout == 'Linux'
+      lineinfile:
+        dest: "/etc/apache2/envvars"
+        regexp: "^export APACHE_RUN_USER="
+        line: "export APACHE_RUN_USER={{ lookup('env','USER') }}"
+        state: present
+      notify:
+        - Restart apache2
+
+    - name: Change Apache run group
+      when: uname_result.stdout == 'Linux'
+      lineinfile:
+        dest: "/etc/apache2/envvars"
+        regexp: "^export APACHE_RUN_GROUP="
+        line: "export APACHE_RUN_GROUP={{ lookup('env','USER') }}"
+        state: present
+      notify:
+        - Restart apache2
+
+    - name: Create apache vhost for proxy
+      when: uname_result.stdout == 'Linux'
+      template:
+        src: battle.conf
+        dest: /etc/apache2/sites-available/battle.conf
+      notify: Restart apache2
+
+    - name: Enable apache vhost
+      when: uname_result.stdout == 'Linux'
+      file:
+        src: /etc/apache2/sites-available/battle.conf
+        dest: /etc/apache2/sites-enabled/602-battle.conf
+        state: link
+      notify: Restart apache2
+
+  handlers:
+    - name: Restart apache2
+      service: name=apache2 state=restarted

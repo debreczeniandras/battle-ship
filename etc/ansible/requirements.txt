@@ -1,0 +1,3 @@
+pyopenssl
+docker<4.0
+docker-compose

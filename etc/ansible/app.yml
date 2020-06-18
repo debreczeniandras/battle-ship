@@ -1,0 +1,12 @@
+- name: Set up application
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Build Docker Compose
+      docker_compose:
+        project_src: ../../
+        build: yes
+    - name: Install backend dependencies
+      command: docker-compose run --rm app install --no-interaction
+      args:
+        chdir: ../../

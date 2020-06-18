@@ -1,0 +1,38 @@
+---
+
+- name: Ask for variables
+  hosts: localhost
+  vars_prompt:
+    - name: "web_port" #PORT_WEB
+      prompt: "External Web Port"
+      default: 60380
+      private: no
+  tasks:
+    - name: Persist Variable
+      set_fact:
+        web_port: "{{web_port}}"
+    - name: Check operating system
+      shell: uname
+      ignore_errors: yes
+      register: uname_result
+
+- name: Set up Apache for local proxy
+  import_playbook: etc/ansible/apache.yml
+
+- name: Set up ENV file
+  import_playbook: etc/ansible/env.yml
+
+- name: Set up Environment and host
+  import_playbook: etc/ansible/hosts.yml
+
+- name: Setup application
+  import_playbook: etc/ansible/app.yml
+
+- name: Print Message
+  hosts: localhost
+  tasks:
+    - debug:
+        msg:
+          - "URL"
+          - "----"
+          - "api.battle.local"
