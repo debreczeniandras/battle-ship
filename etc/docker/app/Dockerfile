@@ -1,4 +1,4 @@
-FROM php:7.2-fpm-stretch
+FROM php:7.4-fpm
 
 ARG PHP_TIMEZONE
 ARG PHP_MEMORY_LIMIT
@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype-dir --with-jpeg-dir=/usr/include/ \
+RUN docker-php-ext-configure gd \
     && docker-php-ext-configure intl \
     && docker-php-ext-install -j$(nproc) \
         gd \
