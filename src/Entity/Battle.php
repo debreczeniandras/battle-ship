@@ -2,13 +2,33 @@
 
 namespace App\Entity;
 
+use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+
 class Battle
 {
-    /** @var Player[] */
+    /**
+     * The Players of the battle
+     *
+     * @var Player[]
+     *
+     * @Assert\Count(min="2", max="2")
+     * @Groups({"place"})
+     */
     private $players;
     
-    /** @var string */
-    private $currentState = 'start';
+    /**
+     * The state of the battle
+     *
+     * @var string
+     */
+    private $currentState = 'ready';
+    
+    public function __construct()
+    {
+        $this->players = new ParameterBag();
+    }
     
     /**
      * @return Player[]

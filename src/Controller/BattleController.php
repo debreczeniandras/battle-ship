@@ -2,16 +2,36 @@
 
 namespace App\Controller;
 
+use App\Entity\Battle;
+use App\Form\Type\BattleType;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
 
 class BattleController extends AbstractController
 {
     /**
-     * @Rest\Get("start")
+     * The first entry point to the game.
+     *
+     * @param Battle $battle
+     *
+     * @Rest\Post("start")
+     *
+     * @SWG\Parameter(name="battle",
+     *     in="body",
+     *     required=true,
+     *     @SWG\Schema(
+     *          type="array",
+     *          @Model(type=Battle::class, groups={"place"})
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=204,
+     *     description="The Battle is set."
+     * )
      */
-    public function place()
+    public function start(Battle $battle)
     {
 //        $form = $this->createForm(RestPaginationFilterType::class);
 //        $form->submit($request->query->all(), false);

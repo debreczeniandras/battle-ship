@@ -9,14 +9,14 @@ framework:
         property: currentState
       supports:
         - App\Entity\Battle
-      initial_marking: start
+      initial_marking: ready
       places:
-        - start
+        - ready
         - started
         - finished
       transitions:
         place:
-          from: start
+          from: ready
           to:   started
         finish:
           from: [started]
