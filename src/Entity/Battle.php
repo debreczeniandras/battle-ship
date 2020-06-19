@@ -2,19 +2,35 @@
 
 namespace App\Entity;
 
-use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class Battle
 {
+    /**
+     * @var string
+     *
+     * @Serializer\Groups("init")
+     */
+    private $id;
+    
+    /**
+     * The game options
+     *
+     * @var GameOptions
+     *
+     * @Assert\NotBlank()
+     * @Assert\Valid()
+     * @Serializer\Groups("init")
+     */
+    private $options;
+    
     /**
      * The Players of the battle
      *
      * @var Player[]
      *
      * @Assert\Count(min="2", max="2")
-     * @Groups({"place"})
      */
     private $players;
     
@@ -22,12 +38,15 @@ class Battle
      * The state of the battle
      *
      * @var string
+     *
+     * @Serializer\Groups({"init"})
+     * @Serializer\SerializedName("status")
      */
-    private $currentState = 'ready';
+    private $currentState = 'waiting';
     
-    public function __construct()
+    private function __construct()
     {
-        $this->players = new ParameterBag();
+        // user static instance creator
     }
     
     /**
@@ -68,5 +87,53 @@ class Battle
         $this->currentState = $currentState;
         
         return $this;
+    }
+    
+    /**
+     * @return GameOptions
+     */
+    public function getOptions(): GameOptions
+    {
+        return $this->options;
+    }
+    
+    /**
+     * @param GameOptions $options
+     *
+     * @return Battle
+     */
+    public function setOptions(GameOptions $options): Battle
+    {
+        $this->options = $options;
+        
+        return $this;
+    }
+    
+    /**
+     * @param $hash
+     *
+     * @return Battle
+     */
+    private function setId($hash): Battle
+    {
+        $this->id = $hash;
+        
+        return $this;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getId(): string
+    {
+        return $this->id;
+    }
+    
+    public static function newInstance()
+    {
+        $battle = new static();
+        $battle->setId(hash("crc32b", hash('sha256', uniqid(mt_rand(), true), true)));
+        
+        return $battle;
     }
 }

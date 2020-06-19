@@ -9,13 +9,17 @@ framework:
         property: currentState
       supports:
         - App\Entity\Battle
-      initial_marking: ready
+      initial_marking: waiting
       places:
+        - waiting
         - ready
         - started
         - finished
       transitions:
-        place:
+        set-options:
+          from: waiting
+          to: ready
+        place-ships:
           from: ready
           to:   started
         finish:
