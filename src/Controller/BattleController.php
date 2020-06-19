@@ -7,13 +7,13 @@ use App\Entity\GameOptions;
 use App\Form\Type\BattleType;
 use App\Form\Type\GameOptionsType;
 use App\Repository\BattleRepository;
+use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -42,8 +42,15 @@ class BattleController extends AbstractFOSRestController
      * @SWG\Response(
      *     response=201,
      *     description="The Battle is set.",
+     *     headers={@SWG\Header(header="Location", description="Link to created resource", type="string")},
      *     @Model(type=Battle::class, groups={"init"})
      * )
+     *
+     * @SWG\Response(
+     *     response=400,
+     *     description="When a validation error has occured."
+     * )
+     * @SWG\Tag(name="Battle")
      */
     public function setOptions(GameOptions $options, BattleRepository $repository): Response
     {
@@ -55,55 +62,40 @@ class BattleController extends AbstractFOSRestController
         }
         
         $battle = $repository->createNewFromOptions($form->getData());
-        $view   = $this->view($battle, 201, ['Location', '/battles/' . $battle->getId()]);
+        $view   = $this->view($battle, 201)
+                       ->setContext((new Context())->setGroups(['init']))
+                       ->setHeader('Location', $this->generateUrl('get_battle', ['id' => $battle->getId()]))
+                       ->setFormat('json');
         
         return $this->handleView($view);
     }
     
     /**
-     * Set up ships and start the game
+     * Get infos about the battle
      *
-     * @param Battle $battle
+     * @param BattleRepository $repository
      *
-     * @Rest\Post("/{id}")
+     * @return FormInterface|Response
      *
-     * @SWG\Parameter(name="battle",
-     *     in="body",
-     *     required=true,
-     *     @SWG\Schema(
-     *          type="array",
-     *          @Model(type=BattleType::class, groups={"place"})
-     *     )
+     * @Rest\Get("/{id}", name="get_battle")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Get current infos about the battle.",
+     *     @Model(type=Battle::class, groups={"init"})
      * )
      * @SWG\Response(
-     *     response=204,
-     *     description="The Battle is set."
+     *     response=404,
+     *     description="When a battle with this id can not be found."
      * )
+     * @SWG\Tag(name="Battle")
      */
-    public function placeShips(Battle $battle)
+    public function getBattle(BattleRepository $repository, $id): Response
     {
-//        $form = $this->createForm(RestPaginationFilterType::class);
-//        $form->submit($request->query->all(), false);
-//
-//        if (!$form->isValid()) {
-//            return $form;
-//        }
-//
-//        /** @var RestPaginationParams $params */
-//        $params = $form->getData();
-//
-//        $objectManager = $this->getDoctrine()->getManagerForClass(Continent::class);
-//        $rep           = $objectManager->getRepository(Continent::class);
-//        $continents    = $rep->findAll('order', $params->getLocale());
-//
-//        /** @var Pagerfanta $pagerfanta */
-//        $pagerfanta = new Pagerfanta(new ArrayAdapter($continents));
-//        $pagerfanta->setCurrentPage($params->getPage());
-//        $pagerfanta->setMaxPerPage($params->getLimit());
-//
-//        $view = $this->view($pagerfanta->getCurrentPageResults(), 200, $this->getPaginationHeaders($pagerfanta));
-//
-//        return $this->handleView($view);
-    
+        $battle = $repository->findById($id);
+        
+        $view = $this->view($battle, 200);
+        $view->setContext((new Context())->setGroups(['init']))->setFormat('json');
+        
+        return $this->handleView($view);
     }
 }

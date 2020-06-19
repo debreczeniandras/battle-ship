@@ -39,6 +39,14 @@ services:
     image: redis:latest
     volumes:
       - redis-data:/data
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      REDIS_HOSTS: "battle:redis:6379:0"
+    ports:
+      - ${PORT_REDIS_GUI}:8081
+    depends_on:
+      - redis
 
 volumes:
   redis-data:

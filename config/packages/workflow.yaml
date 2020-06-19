@@ -16,10 +16,10 @@ framework:
         - started
         - finished
       transitions:
-        set-options:
+        set_options:
           from: waiting
           to: ready
-        place-ships:
+        place_ships:
           from: ready
           to:   started
         finish:

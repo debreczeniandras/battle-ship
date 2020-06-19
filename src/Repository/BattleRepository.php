@@ -26,11 +26,19 @@ class BattleRepository
         $battle = Battle::newInstance();
         $battle->setOptions($options);
         
-        $serialized = $this->serializer->serialize($battle, 'json');
+        $workflow = $this->workflows->get($battle);
+        $workflow->apply($battle, 'set_options');
+        
+        $serialized = $this->serializer->serialize($battle, 'json', ['groups' => 'init']);
         $this->redis->set($battle->getId(), $serialized);
         
-        $workflow = $this->workflows->get($battle);
-        $workflow->apply($battle, 'set-options');
+        return $battle;
+    }
+    
+    public function findById($id)
+    {
+        $data   = $this->redis->get($id);
+        $battle = $this->serializer->deserialize($data, Battle::class, 'json', ['groups' => 'init']);
         
         return $battle;
     }

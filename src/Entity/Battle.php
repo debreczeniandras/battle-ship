@@ -10,7 +10,7 @@ class Battle
     /**
      * @var string
      *
-     * @Serializer\Groups("init")
+     * @Serializer\Groups({"init"})
      */
     private $id;
     
@@ -21,7 +21,7 @@ class Battle
      *
      * @Assert\NotBlank()
      * @Assert\Valid()
-     * @Serializer\Groups("init")
+     * @Serializer\Groups({"init"})
      */
     private $options;
     
@@ -40,7 +40,7 @@ class Battle
      * @var string
      *
      * @Serializer\Groups({"init"})
-     * @Serializer\SerializedName("status")
+     * @Serializer\SerializedName("state")
      */
     private $currentState = 'waiting';
     
@@ -114,7 +114,7 @@ class Battle
      *
      * @return Battle
      */
-    private function setId($hash): Battle
+    public function setId($hash): Battle
     {
         $this->id = $hash;
         

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Swagger\Annotations as SWG;
+use Symfony\Component\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class GameOptions
@@ -15,6 +16,7 @@ class GameOptions
      * @Assert\Type("integer")
      * @Assert\Range(min="8", max="15", minMessage="This value should be greater than 8")
      * @SWG\Property(default="8")
+     * @Serializer\Groups({"init"})
      */
     private $width = 8;
     
@@ -26,6 +28,7 @@ class GameOptions
      * @Assert\Type("integer")
      * @Assert\Range(min="8", max="15")
      * @SWG\Property(default="8")
+     * @Serializer\Groups({"init"})
      */
     private $height = 8;
     
