@@ -77,7 +77,7 @@ class Battle
      */
     public function addPlayer(Player $player): Battle
     {
-        if (!$this->players->exists(function (Player $item) use ($player) {
+        if (!$this->players->exists(function ($key, Player $item) use ($player) {
             return $item->getId() == $player->getId();
         })) {
             $this->players->add($player);

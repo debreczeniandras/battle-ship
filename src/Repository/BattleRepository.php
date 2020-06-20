@@ -54,6 +54,11 @@ class BattleRepository
     
     public function store(Battle $battle)
     {
+        if ($battle->getPlayers()->count() === 2) {
+            $workflow = $this->workflows->get($battle);
+            $workflow->apply($battle, 'set_players');
+        }
+        
         $serialized = $this->serializer->serialize($battle, 'json');
         $this->redis->set($battle->getId(), $serialized);
     }

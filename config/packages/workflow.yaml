@@ -19,7 +19,7 @@ framework:
         set_options:
           from: waiting
           to: ready
-        place_ships:
+        set_players:
           from: ready
           to:   started
         finish:

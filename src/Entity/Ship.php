@@ -102,4 +102,18 @@ class Ship
         
         return $this;
     }
+    
+    public function getCoordinates(): array
+    {
+        $coords = [];
+        
+        for ($i = $this->start->getX(); $i <= $this->end->getX(); $i++) {
+            // convert string to ASCII value int
+            for ($j = ord($this->start->getY()) - 64; $j <= ord($this->end->getY()) - 64; $j++) {
+                $coords[] = (string)$i . chr(64 + $j);
+            }
+        }
+        
+        return $coords;
+    }
 }

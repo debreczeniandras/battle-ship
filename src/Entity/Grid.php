@@ -27,7 +27,7 @@ class Grid
      */
     private $shots;
     
-    private function __construct()
+    public function __construct()
     {
         $this->ships = new ArrayCollection();
         $this->shots = new ArrayCollection();
@@ -35,12 +35,12 @@ class Grid
     
     public function addShip(Ship $ship)
     {
-        $this->ships->set($ship->getId(), $ship);
+        $this->ships->add($ship);
     }
     
     public function addShot(Shot $shot)
     {
-        $this->shots->add([$shot]);
+        $this->shots->add($shot);
     }
     
     public static function XChoices()
@@ -91,5 +91,21 @@ class Grid
         $this->shots = new ArrayCollection($shots);
         
         return $this;
+    }
+    
+    public function getShipCoordinates()
+    {
+        $coords = [];
+        
+        foreach ($this->ships as $ship) {
+            $coords = array_merge($coords, $ship->getCoordinates());
+        }
+        
+        return $coords;
+    }
+    
+    public function isShipOverlapping(Ship $ship): bool
+    {
+        return (bool) array_intersect($this->getShipCoordinates(), $ship->getCoordinates());
     }
 }
