@@ -30,8 +30,10 @@ class BattleController extends AbstractFOSRestController
     /**
      * Set up and prepare for ships.
      *
-     * @param GameOptions      $options
-     * @param BattleRepository $repository
+     * @param GameOptions          $options
+     * @param Request              $request
+     * @param BattleWorkflowHelper $workflow
+     * @param BattleRepository     $repository
      *
      * @return FormInterface|Response
      *
@@ -49,7 +51,7 @@ class BattleController extends AbstractFOSRestController
      *     response=201,
      *     description="The Battle is set.",
      *     headers={@SWG\Header(header="Location", description="Link to created resource", type="string")},
-     *     @Model(type=Battle::class, groups={"init"})
+     *     @Model(type=Battle::class)
      * )
      *
      * @SWG\Response(
@@ -58,20 +60,28 @@ class BattleController extends AbstractFOSRestController
      * )
      * @SWG\Tag(name="Battle")
      */
-    public function setOptions(GameOptions $options, BattleRepository $repository): Response
-    {
+    public function setOptions(
+        GameOptions $options,
+        Request $request,
+        BattleWorkflowHelper $workflow,
+        BattleRepository $repository
+    ): Response {
         $form = $this->createForm(GameOptionsType::class, $options);
-        $form->submit(null, false);
+        $form->submit($request->request->all(), false);
         
         if (!$form->isValid()) {
             return $this->handleView($this->view($form)->setFormat('json'));
         }
         
-        $battle = $repository->createNewFromOptions($form->getData());
-        $view   = $this->view($battle, 201)
-                       ->setContext((new Context())->setGroups(['init']))
-                       ->setHeader('Location', $this->generateUrl('get_battle', ['id' => $battle->getId()]))
-                       ->setFormat('json');
+        $battle = Battle::createNewFromOptions($options);
+        $workflow->apply($battle, 'set_options');
+        
+        $repository->store($battle, 'Init');
+        
+        $view = $this->view($battle, 201)
+                     ->setContext((new Context())->setGroups(['Init']))
+                     ->setHeader('Location', $this->generateUrl('get_battle', ['id' => $battle->getId()]))
+                     ->setFormat('json');
         
         return $this->handleView($view);
     }
@@ -83,12 +93,12 @@ class BattleController extends AbstractFOSRestController
      *
      * @return FormInterface|Response
      *
-     * @ParamConverter(name="battle", options={"requestParam": "id", "contextGroups": {"init"}})
+     * @ParamConverter(name="battle", options={"requestParam": "id"})
      * @Rest\Get("/{id}", name="get_battle")
      * @SWG\Response(
      *     response=200,
      *     description="Get current infos about the battle.",
-     *     @Model(type=Battle::class, groups={"init"})
+     *     @Model(type=Battle::class, groups={"Default"})
      * )
      * @SWG\Response(
      *     response=404,
@@ -99,7 +109,7 @@ class BattleController extends AbstractFOSRestController
     public function getBattle(Battle $battle): Response
     {
         $view = $this->view($battle, 200);
-        $view->setContext((new Context())->setGroups(['init']))->setFormat('json');
+        $view->setContext((new Context())->setGroups(['Default']))->setFormat('json');
         
         return $this->handleView($view);
     }
@@ -147,7 +157,8 @@ class BattleController extends AbstractFOSRestController
         
         // check current workflow place
         if (!$workflow->can($battle, 'set_players')) {
-            $form->addError(new FormError(sprintf('Setting the players/grid is not allowed at this state [%s].', $battle->getState())));
+            $form->addError(new FormError(sprintf('Setting the players/grid is not allowed at this state [%s].',
+                                                  $battle->getState())));
         }
         
         if (!$form->isValid()) {

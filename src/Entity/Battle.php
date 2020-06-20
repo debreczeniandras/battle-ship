@@ -12,7 +12,7 @@ class Battle
     /**
      * @var string
      *
-     * @Serializer\Groups({"Default"})
+     * @Serializer\Groups({"Default", "Init"})
      */
     private $id;
     
@@ -23,7 +23,7 @@ class Battle
      *
      * @Assert\NotBlank()
      * @Assert\Valid()
-     * @Serializer\Groups({"Default"})
+     * @Serializer\Groups({"Default", "Init"})
      */
     private $options;
     
@@ -43,7 +43,7 @@ class Battle
      *
      * @var string
      *
-     * @Serializer\Groups({"Default"})
+     * @Serializer\Groups({"Default", "Init"})
      */
     private $state = 'waiting';
     
@@ -160,10 +160,11 @@ class Battle
         return $this->id;
     }
     
-    public static function newInstance()
+    public static function createNewFromOptions(GameOptions $options): Battle
     {
         $battle = new static();
         $battle->setId(hash("crc32b", hash('sha256', uniqid(mt_rand(), true), true)));
+        $battle->setOptions($options);
         
         return $battle;
     }

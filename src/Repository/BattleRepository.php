@@ -23,20 +23,6 @@ class BattleRepository
         $this->workflows  = $workflows;
     }
     
-    public function createNewFromOptions(GameOptions $options): Battle
-    {
-        $battle = Battle::newInstance();
-        $battle->setOptions($options);
-        
-        $workflow = $this->workflows->get($battle);
-        $workflow->apply($battle, 'set_options');
-        
-        $serialized = $this->serializer->serialize($battle, 'json', ['groups' => 'init']);
-        $this->redis->set($battle->getId(), $serialized);
-        
-        return $battle;
-    }
-    
     public function findById($id, $contextGroups = []): Battle
     {
         $data    = $this->redis->get($id);
