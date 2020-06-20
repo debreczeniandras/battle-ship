@@ -33,6 +33,7 @@ class Battle
      * @var Player[]|ArrayCollection
      *
      * @Assert\Count(min="2", max="2")
+     * @Assert\Valid()
      */
     private $players;
     
@@ -176,14 +177,53 @@ class Battle
     public function validate(ExecutionContextInterface $context, $payload)
     {
         $playerIds = [];
+        
+        $width = $this->getOptions()->getWidth();
+        $height = $this->getOptions()->getHeight();
+        
+        $i = 0;
         foreach ($this->players as $player) {
+            // check for duplicate users
             if (in_array($player->getId(), $playerIds)) {
                 $context->buildViolation(sprintf('person "%s" already exists.', $player->getId()))
                         ->atPath('players')
                         ->addViolation();
+                
+                // if this user already exists, then skip the rest of the validation altogether.
+                return;
             }
             
+            // check the health of the grid
+            if ($grid = $player->getGrid()) {
+                $j = 0;
+                
+                // let's check if the provided coordinates are within the range of the board
+                // the minimum value of X is already checked in the Entity (Greaterorequal constraint)
+                foreach ($grid->getShips() ?? [] as $ship) {
+                    $startY = ord($ship->getStart()->getY()) - 64;
+                    $endY = ord($ship->getEnd()->getY()) - 64;
+                    
+                    switch (true) {
+                        case $ship->getStart()->getX() > $width:
+                        case $ship->getEnd()->getX() > $width:
+                        case $startY > $height:
+                        case $endY > $height:
+                            $context->buildViolation(sprintf('This ship is off the board.'))
+                                    ->atPath("players[$i].grid.ships[$j].id")
+                                    ->addViolation();
+                    }
+                    
+                    $j++;
+                }
+            }
+            
+            $i++;
             $playerIds[] = $player->getId();
         }
+        
+        
+        
+        
+        
     }
 }

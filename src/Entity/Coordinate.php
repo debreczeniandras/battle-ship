@@ -15,7 +15,7 @@ class Coordinate
      *
      * @Groups({"place"})
      * @Assert\Type("integer")
-     * @Assert\Choice(callback={"App\Entity\Grid", "XChoices"})
+     * @Assert\GreaterThanOrEqual(1)
      */
     private $x;
     
@@ -26,7 +26,6 @@ class Coordinate
      *
      * @Groups({"place"})
      * @Assert\Type("string")
-     * @Assert\Choice(callback={"App\Entity\Grid", "YChoices"})
      */
     private $y;
     
@@ -65,7 +64,7 @@ class Coordinate
      */
     public function setY(string $y): Coordinate
     {
-        $this->y = $y;
+        $this->y = strtoupper($y);
         
         return $this;
     }

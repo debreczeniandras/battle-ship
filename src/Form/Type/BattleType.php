@@ -12,7 +12,7 @@ class BattleType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('players', CollectionType::class, ['entry_type' => PlayerType::class, 'allow_add' => true, 'by_reference' => true]);
+        $builder->add('players', CollectionType::class, ['entry_type' => PlayerType::class, 'allow_add' => true, 'allow_extra_fields' => true]);
     }
     
     public function configureOptions(OptionsResolver $resolver)

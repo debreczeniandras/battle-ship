@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class Grid
 {
@@ -14,10 +15,11 @@ class Grid
     /**
      * The placement of the Ships.
      *
-     * @var Ship[]
+     * @var Ship[]|ArrayCollection
      *
      * @Serializer\Groups({"place"})
      * @Assert\Count(min="5", max="5")
+     * @Assert\Valid()
      */
     private $ships;
     
@@ -93,11 +95,15 @@ class Grid
         return $this;
     }
     
-    public function getShipCoordinates()
+    public function getShipCoordinates(Ship $exclude = null)
     {
         $coords = [];
         
         foreach ($this->ships as $ship) {
+            if ($ship->getId() === $exclude->getId()) {
+                continue;
+            }
+            
             $coords = array_merge($coords, $ship->getCoordinates());
         }
         
@@ -113,6 +119,26 @@ class Grid
      */
     public function isShipOverlapping(Ship $ship): bool
     {
-        return (bool)array_intersect($this->getShipCoordinates(), $ship->getCoordinates());
+        return (bool)array_intersect($this->getShipCoordinates($ship), $ship->getCoordinates());
+    }
+    
+    /**
+     * @param ExecutionContextInterface $context
+     * @param                           $payload
+     *
+     * @Assert\Callback()
+     */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        $i = 0;
+        foreach ($this->ships as $ship) {
+            if ($this->isShipOverlapping($ship)) {
+                $context->buildViolation(sprintf('The "%s" ship is overlapping on the board.', $ship->getId()))
+                        ->atPath("ships[$i].id")
+                        ->addViolation();
+            }
+            
+            $i++;
+        }
     }
 }
