@@ -147,15 +147,15 @@ class BattleController extends AbstractFOSRestController
         
         // check current workflow place
         if (!$workflow->can($battle, 'set_players')) {
-//            $form->addError(new FormError(sprintf('Setting the players/grid is not allowed at this state [%s].', $battle->getState())));
+            $form->addError(new FormError(sprintf('Setting the players/grid is not allowed at this state [%s].', $battle->getState())));
         }
         
         if (!$form->isValid()) {
             return $this->handleView($this->view($form)->setFormat('json'));
         }
         
-//        $workflow->apply($battle, 'set_players');
-//        $repository->store($battle);
+        $workflow->apply($battle, 'set_players');
+        $repository->store($battle);
         
         return $this->handleView($this->view(null, 204)->setFormat('json'));
     }

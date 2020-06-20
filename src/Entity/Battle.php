@@ -178,7 +178,7 @@ class Battle
     {
         $playerIds = [];
         
-        $width = $this->getOptions()->getWidth();
+        $width  = $this->getOptions()->getWidth();
         $height = $this->getOptions()->getHeight();
         
         $i = 0;
@@ -197,20 +197,41 @@ class Battle
             if ($grid = $player->getGrid()) {
                 $j = 0;
                 
-                // let's check if the provided coordinates are within the range of the board
-                // the minimum value of X is already checked in the Entity (Greaterorequal constraint)
+                $shipIds = [];
+                // check ships
                 foreach ($grid->getShips() ?? [] as $ship) {
-                    $startY = ord($ship->getStart()->getY()) - 64;
-                    $endY = ord($ship->getEnd()->getY()) - 64;
                     
+                    // if the provided coordinates are within the range of the board
+                    // the minimum value of X "1" is already checked in the Entity (Greaterorequal constraint)
                     switch (true) {
                         case $ship->getStart()->getX() > $width:
                         case $ship->getEnd()->getX() > $width:
-                        case $startY > $height:
-                        case $endY > $height:
+                        case $ship->getStart()->getYAscii() > $height:
+                        case $ship->getEnd()->getYAscii() > $height:
                             $context->buildViolation(sprintf('This ship is off the board.'))
                                     ->atPath("players[$i].grid.ships[$j].id")
                                     ->addViolation();
+                    }
+                    
+                    // check if ships are unique
+                    if (in_array($ship->getId(), $shipIds)) {
+                        $context->buildViolation(sprintf('This ship is already added to the board.'))
+                                ->atPath("players[$i].grid.ships[$j].id")
+                                ->addViolation();
+                    }
+                    
+                    $shipIds[] = $ship->getId();
+                    
+                    // check if ships have the correct sizes
+                    if ($ship->getLength() !== \App\Config\Ship::getLength($ship->getId())) {
+                        if (in_array($ship->getId(), $shipIds)) {
+                            $context->buildViolation(sprintf('A %s ship is supposed to be %d long. [%s]',
+                                                             $ship->getId(),
+                                                             \App\Config\Ship::getLength($ship->getId()),
+                                                             implode(',', $ship->getCoordinates())))
+                                    ->atPath("players[$i].grid.ships[$j].id")
+                                    ->addViolation();
+                        }
                     }
                     
                     $j++;
@@ -220,10 +241,5 @@ class Battle
             $i++;
             $playerIds[] = $player->getId();
         }
-        
-        
-        
-        
-        
     }
 }

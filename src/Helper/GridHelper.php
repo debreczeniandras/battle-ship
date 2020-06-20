@@ -45,7 +45,7 @@ class GridHelper
                 }
                 
                 $start = (new Coordinate())->setX($x)->setY(chr(64 + $y));
-                $end   = Coordinate::calcEnd($start, $length, $layout);
+                $end   = \App\Config\Ship::getEnd($start, $layout, $ship->getId());
                 
                 $ship->setStart($start);
                 $ship->setEnd($end);

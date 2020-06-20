@@ -119,4 +119,14 @@ class Ship
         
         return $coords;
     }
+    
+    /**
+     * The length can be determined based on the subtraction of both start and end coordinates
+     *
+     * @return int
+     */
+    public function getLength(): int
+    {
+        return ($this->end->getX() - $this->start->getX()) + ($this->end->getYAscii() - $this->start->getYAscii() + 1);
+    }
 }

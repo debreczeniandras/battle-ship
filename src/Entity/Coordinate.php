@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Helper\GridHelper;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -58,6 +57,16 @@ class Coordinate
     }
     
     /**
+     * Get the ASCII Int equivalent.
+     *
+     * @return int
+     */
+    public function getYAscii() : int
+    {
+        return ord($this->y) - 64;
+    }
+    
+    /**
      * @param string $y
      *
      * @return Coordinate
@@ -67,35 +76,6 @@ class Coordinate
         $this->y = strtoupper($y);
         
         return $this;
-    }
-    
-    /**
-     * Calculate End Coordinate based on the start.
-     *
-     * @param Coordinate $start
-     * @param            $length
-     * @param            $layout
-     *
-     * @return static
-     */
-    public static function calcEnd(Coordinate $start, $length, $layout)
-    {
-        $endCoordinate = new static();
-        
-        switch ($layout) {
-            case GridHelper::VERTICAL:
-                $endCoordinate->setX($start->getX());
-                // reconvert letter to int, then add the desired length of the ship
-                $endCoordinate->setY(chr(ord($start->getY()) + ($length -1)));
-                
-                break;
-            default:
-            case GridHelper::HORIZONTAL:
-                $endCoordinate->setX($start->getX() + ($length - 1));
-                $endCoordinate->setY($start->getY());
-        }
-        
-        return $endCoordinate;
     }
     
     public function __toString()
