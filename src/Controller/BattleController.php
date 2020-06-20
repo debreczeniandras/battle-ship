@@ -6,6 +6,7 @@ use App\Entity\Battle;
 use App\Entity\GameOptions;
 use App\Entity\Player;
 use App\Form\Type\GameOptionsType;
+use App\Form\Type\PlayerType;
 use App\Repository\BattleRepository;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
@@ -14,6 +15,7 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -77,7 +79,7 @@ class BattleController extends AbstractFOSRestController
      *
      * @return FormInterface|Response
      *
-     * @ParamConverter(name="battle", options={"requestParam": "id"})
+     * @ParamConverter(name="battle", options={"requestParam": "id", "contextGroups": {"init"}})
      * @Rest\Get("/{id}", name="get_battle")
      * @SWG\Response(
      *     response=200,
@@ -99,28 +101,29 @@ class BattleController extends AbstractFOSRestController
     }
     
     /**
-     * Set up ships and start game.
+     * Set up ships for a player
      *
-     * @param GameOptions      $options
-     * @param BattleRepository $repository
+     * @param Battle $battle
+     * @param Player $player
      *
      * @return FormInterface|Response
      *
-     * @ParamConverter("players", converter="fos_rest.request_body")
-     * @Rest\Post("/{battleId}/players/{id}")
+     * @ParamConverter("player", converter="fos_rest.request_body", options={"deserializationContext"={"groups"={"place"}}})
+     * @ParamConverter("battle", options={"requestParam": "id"})
+     * @Rest\Post("/{id}/players/")
      * @SWG\Parameter(name="player",
      *     in="body",
      *     required=true,
      *     @SWG\Schema(
      *          type="object",
-     *          ref=@Model(type=Player::class)
+     *          ref=@Model(type=Player::class, groups={"place"})
      *     )
      * )
      * @SWG\Response(
      *     response=201,
      *     description="The grid has been set for the player.",
      *     headers={@SWG\Header(header="Location", description="Link to created resource", type="string")},
-     *     @Model(type=Battle::class, groups={"init"})
+     *     @Model(type=Battle::class, groups={"place"})
      * )
      *
      * @SWG\Response(
@@ -129,16 +132,15 @@ class BattleController extends AbstractFOSRestController
      * )
      * @SWG\Tag(name="Battle")
      */
-    public function setBattle(GameOptions $options, BattleRepository $repository): Response
+    public function setShips(Battle $battle, Player $player, Request $request): Response
     {
-        $form = $this->createForm(GameOptionsType::class, $options);
+        $form = $this->createForm(PlayerType::class, $player);
         $form->submit(null, false);
         
         if (!$form->isValid()) {
             return $this->handleView($this->view($form)->setFormat('json'));
         }
         
-        $battle = $repository->createNewFromOptions($form->getData());
         $view   = $this->view($battle, 201)
                        ->setContext((new Context())->setGroups(['init']))
                        ->setHeader('Location', $this->generateUrl('get_battle', ['id' => $battle->getId()]))

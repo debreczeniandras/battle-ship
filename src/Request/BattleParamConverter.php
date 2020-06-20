@@ -8,7 +8,6 @@ use App\Repository\BattleRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class BattleParamConverter implements ParamConverterInterface
@@ -42,7 +41,7 @@ class BattleParamConverter implements ParamConverterInterface
             return true;
         }
         
-        $battle = $this->repository->findById($value);
+        $battle = $this->repository->findById($value, $options['contextGroups'] ?? []);
         $request->attributes->set($configuration->getName(), $battle);
         
         return true;

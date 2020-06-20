@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -44,9 +45,9 @@ class Battle
      */
     private $currentState = 'waiting';
     
-    private function __construct()
+    public function __construct()
     {
-        // user static instance creator
+        $this->players = new ParameterBag();
     }
     
     /**
@@ -64,8 +65,22 @@ class Battle
      */
     public function setPlayers(array $players): Battle
     {
-        $this->players = $players;
+        foreach ($players as $player) {
+            $this->players->set($player->getId(), $player);
+        }
         
+        return $this;
+    }
+    
+    /**
+     * @param Player $player
+     *
+     * @return Battle
+     */
+    public function addPlayer(Player $player): Battle
+    {
+        $this->players->set($player->getId(), $player);
+    
         return $this;
     }
     

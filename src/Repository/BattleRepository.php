@@ -35,12 +35,12 @@ class BattleRepository
         return $battle;
     }
     
-    public function findById($id): Battle
+    public function findById($id, $contextGroups = []): Battle
     {
         $data = $this->redis->get($id);
         
         /** @var Battle $battle */
-        $battle = $this->serializer->deserialize($data, Battle::class, 'json', ['groups' => 'init']);
+        $battle = $this->serializer->deserialize($data, Battle::class, 'json', ['groups' => $contextGroups]);
         
         return $battle;
     }

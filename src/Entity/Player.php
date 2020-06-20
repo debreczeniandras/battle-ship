@@ -42,6 +42,26 @@ class Player
     private $grid;
     
     /**
+     * @return string
+     */
+    public function getId(): string
+    {
+        return $this->id;
+    }
+    
+    /**
+     * @param string $id
+     *
+     * @return Player
+     */
+    public function setId(string $id): Player
+    {
+        $this->id = $id;
+        
+        return $this;
+    }
+    
+    /**
      * @return int
      */
     public function getType(): int

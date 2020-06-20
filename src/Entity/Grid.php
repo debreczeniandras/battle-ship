@@ -2,8 +2,7 @@
 
 namespace App\Entity;
 
-use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class Grid
@@ -16,7 +15,7 @@ class Grid
      *
      * @var Ship[]
      *
-     * @Groups({"place"})
+     * @Serializer\Groups({"place"})
      * @Assert\Count(min="5", max="5")
      */
     private $ships;
@@ -44,5 +43,45 @@ class Grid
     public static function YChoices()
     {
         return range(1, chr(65 + self::HEIGHT));
+    }
+    
+    /**
+     * @return Ship[]
+     */
+    public function getShips(): array
+    {
+        return $this->ships;
+    }
+    
+    /**
+     * @param Ship[] $ships
+     *
+     * @return Grid
+     */
+    public function setShips(array $ships): Grid
+    {
+        $this->ships = $ships;
+        
+        return $this;
+    }
+    
+    /**
+     * @return Shot[]
+     */
+    public function getShots(): array
+    {
+        return $this->shots;
+    }
+    
+    /**
+     * @param Shot[] $shots
+     *
+     * @return Grid
+     */
+    public function setShots(array $shots): Grid
+    {
+        $this->shots = $shots;
+        
+        return $this;
     }
 }
