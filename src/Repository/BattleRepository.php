@@ -21,7 +21,7 @@ class BattleRepository
         $this->workflows  = $workflows;
     }
     
-    public function createNewFromOptions(GameOptions $options)
+    public function createNewFromOptions(GameOptions $options) : Battle
     {
         $battle = Battle::newInstance();
         $battle->setOptions($options);
@@ -35,9 +35,11 @@ class BattleRepository
         return $battle;
     }
     
-    public function findById($id)
+    public function findById($id): Battle
     {
-        $data   = $this->redis->get($id);
+        $data = $this->redis->get($id);
+        
+        /** @var Battle $battle */
         $battle = $this->serializer->deserialize($data, Battle::class, 'json', ['groups' => 'init']);
         
         return $battle;

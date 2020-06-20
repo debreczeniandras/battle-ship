@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class Grid
 {
@@ -24,12 +25,6 @@ class Grid
      * @var Shot[]
      */
     private $shots;
-    
-    public function __construct()
-    {
-        $this->ships = new ParameterBag();
-        $this->shots = new ParameterBag();
-    }
     
     public function addShip(Ship $ship)
     {

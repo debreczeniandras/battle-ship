@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Battle;
 use App\Entity\GameOptions;
-use App\Form\Type\BattleType;
+use App\Entity\Player;
 use App\Form\Type\GameOptionsType;
 use App\Repository\BattleRepository;
 use FOS\RestBundle\Context\Context;
@@ -73,10 +73,11 @@ class BattleController extends AbstractFOSRestController
     /**
      * Get infos about the battle
      *
-     * @param BattleRepository $repository
+     * @param Battle $battle
      *
      * @return FormInterface|Response
      *
+     * @ParamConverter(name="battle", options={"requestParam": "id"})
      * @Rest\Get("/{id}", name="get_battle")
      * @SWG\Response(
      *     response=200,
@@ -89,12 +90,59 @@ class BattleController extends AbstractFOSRestController
      * )
      * @SWG\Tag(name="Battle")
      */
-    public function getBattle(BattleRepository $repository, $id): Response
+    public function getBattle(Battle $battle): Response
     {
-        $battle = $repository->findById($id);
-        
         $view = $this->view($battle, 200);
         $view->setContext((new Context())->setGroups(['init']))->setFormat('json');
+        
+        return $this->handleView($view);
+    }
+    
+    /**
+     * Set up ships and start game.
+     *
+     * @param GameOptions      $options
+     * @param BattleRepository $repository
+     *
+     * @return FormInterface|Response
+     *
+     * @ParamConverter("players", converter="fos_rest.request_body")
+     * @Rest\Post("/{battleId}/players/{id}")
+     * @SWG\Parameter(name="player",
+     *     in="body",
+     *     required=true,
+     *     @SWG\Schema(
+     *          type="object",
+     *          ref=@Model(type=Player::class)
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=201,
+     *     description="The grid has been set for the player.",
+     *     headers={@SWG\Header(header="Location", description="Link to created resource", type="string")},
+     *     @Model(type=Battle::class, groups={"init"})
+     * )
+     *
+     * @SWG\Response(
+     *     response=400,
+     *     description="When a validation error has occured."
+     * )
+     * @SWG\Tag(name="Battle")
+     */
+    public function setBattle(GameOptions $options, BattleRepository $repository): Response
+    {
+        $form = $this->createForm(GameOptionsType::class, $options);
+        $form->submit(null, false);
+        
+        if (!$form->isValid()) {
+            return $this->handleView($this->view($form)->setFormat('json'));
+        }
+        
+        $battle = $repository->createNewFromOptions($form->getData());
+        $view   = $this->view($battle, 201)
+                       ->setContext((new Context())->setGroups(['init']))
+                       ->setHeader('Location', $this->generateUrl('get_battle', ['id' => $battle->getId()]))
+                       ->setFormat('json');
         
         return $this->handleView($view);
     }
