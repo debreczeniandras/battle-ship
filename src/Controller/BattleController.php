@@ -8,6 +8,7 @@ use App\Entity\Player;
 use App\Form\Type\BattleType;
 use App\Form\Type\GameOptionsType;
 use App\Form\Type\PlayerType;
+use App\Helper\BattleWorkflowHelper;
 use App\Repository\BattleRepository;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
@@ -106,9 +107,10 @@ class BattleController extends AbstractFOSRestController
     /**
      * Set up ships for a player
      *
-     * @param Battle           $battle
-     * @param Request          $request
-     * @param BattleRepository $repository
+     * @param Battle               $battle
+     * @param Request              $request
+     * @param BattleWorkflowHelper $workflow
+     * @param BattleRepository     $repository
      *
      * @return FormInterface|Response
      *
@@ -134,15 +136,25 @@ class BattleController extends AbstractFOSRestController
      * )
      * @SWG\Tag(name="Battle")
      */
-    public function setShips(Battle $battle, Request $request, BattleRepository $repository): Response
-    {
+    public function setShips(
+        Battle $battle,
+        Request $request,
+        BattleWorkflowHelper $workflow,
+        BattleRepository $repository
+    ): Response {
         $form = $this->createForm(BattleType::class, $battle);
         $form->submit(['players' => $request->request->all()], false);
+        
+        // check current workflow place
+        if (!$workflow->can($battle, 'set_players')) {
+            $form->addError(new FormError(sprintf('Setting the players/grid is not allowed at this state [%s].', $battle->getState())));
+        }
         
         if (!$form->isValid()) {
             return $this->handleView($this->view($form)->setFormat('json'));
         }
         
+        $workflow->apply($battle, 'set_players');
         $repository->store($battle);
         
         return $this->handleView($this->view(null, 204)->setFormat('json'));

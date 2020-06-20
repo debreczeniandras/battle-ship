@@ -13,7 +13,7 @@ framework:
       places:
         - waiting
         - ready
-        - started
+        - playing
         - finished
       transitions:
         set_options:
@@ -21,7 +21,7 @@ framework:
           to: ready
         set_players:
           from: ready
-          to:   started
+          to:   playing
         finish:
-          from: [started]
+          from: [playing]
           to:   finished
