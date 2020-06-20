@@ -104,8 +104,15 @@ class Grid
         return $coords;
     }
     
+    /**
+     * @param Ship $ship
+     *
+     * @return bool
+     *
+     * @Serializer\Ignore()
+     */
     public function isShipOverlapping(Ship $ship): bool
     {
-        return (bool) array_intersect($this->getShipCoordinates(), $ship->getCoordinates());
+        return (bool)array_intersect($this->getShipCoordinates(), $ship->getCoordinates());
     }
 }

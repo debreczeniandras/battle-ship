@@ -35,25 +35,23 @@ class PlayerType extends AbstractType implements EventSubscriberInterface
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(['data_class' => Player::class, 'csrf_protection' => false,]);
-        $resolver->setRequired('battle');
-        $resolver->setAllowedTypes('battle', Battle::class);
     }
     
     public static function getSubscribedEvents()
     {
         return [
-            FormEvents::PRE_SET_DATA => 'onPreSetData',
+            FormEvents::SUBMIT => 'setRandomBoard',
         ];
     }
     
-    public function onPreSetData(FormEvent $event)
+    public function setRandomBoard(FormEvent $event)
     {
         /** @var Player $player */
         $player = $event->getData();
         if ($player->getType() === \App\Enum\PlayerType::COMPUTER) {
-            $battle = $event->getForm()->getConfig()->getOption('battle');
+            $battle = $event->getForm()->getRoot()->getData();
             $grid   = $this->gridHelper->getRandomGrid($battle);
-            
+
             $player->setGrid($grid);
         }
     }

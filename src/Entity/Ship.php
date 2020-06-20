@@ -46,7 +46,7 @@ class Ship
     /**
      * @return string
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -66,7 +66,7 @@ class Ship
     /**
      * @return Coordinate
      */
-    public function getStart(): Coordinate
+    public function getStart(): ?Coordinate
     {
         return $this->start;
     }
@@ -86,7 +86,7 @@ class Ship
     /**
      * @return Coordinate
      */
-    public function getEnd(): Coordinate
+    public function getEnd(): ?Coordinate
     {
         return $this->end;
     }

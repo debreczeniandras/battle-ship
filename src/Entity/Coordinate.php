@@ -33,7 +33,7 @@ class Coordinate
     /**
      * @return int
      */
-    public function getX(): int
+    public function getX(): ?int
     {
         return $this->x;
     }
@@ -53,7 +53,7 @@ class Coordinate
     /**
      * @return string
      */
-    public function getY(): string
+    public function getY(): ?string
     {
         return $this->y;
     }

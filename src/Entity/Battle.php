@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class Battle
 {
@@ -164,5 +165,25 @@ class Battle
         $battle->setId(hash("crc32b", hash('sha256', uniqid(mt_rand(), true), true)));
         
         return $battle;
+    }
+    
+    /**
+     * @param ExecutionContextInterface $context
+     * @param                           $payload
+     *
+     * @Assert\Callback()
+     */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        $playerIds = [];
+        foreach ($this->players as $player) {
+            if (in_array($player->getId(), $playerIds)) {
+                $context->buildViolation(sprintf('person "%s" already exists.', $player->getId()))
+                        ->atPath('players')
+                        ->addViolation();
+            }
+            
+            $playerIds[] = $player->getId();
+        }
     }
 }

@@ -44,7 +44,7 @@ class Player
     /**
      * @return string
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -84,7 +84,7 @@ class Player
     /**
      * @return Grid
      */
-    public function getGrid(): Grid
+    public function getGrid(): ?Grid
     {
         return $this->grid;
     }

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Battle;
 use App\Entity\GameOptions;
 use App\Entity\Player;
+use App\Form\Type\BattleType;
 use App\Form\Type\GameOptionsType;
 use App\Form\Type\PlayerType;
 use App\Repository\BattleRepository;
@@ -106,28 +107,24 @@ class BattleController extends AbstractFOSRestController
      * Set up ships for a player
      *
      * @param Battle           $battle
-     * @param Player           $player
-     *
      * @param Request          $request
      * @param BattleRepository $repository
      *
      * @return FormInterface|Response
      *
-     * @ParamConverter("player", converter="fos_rest.request_body",
-     *                           options={"deserializationContext"={"groups"={"place"}}})
      * @ParamConverter("battle", options={"requestParam": "id"})
-     * @Rest\Post("/{id}/players/")
-     * @SWG\Parameter(name="player",
+     * @Rest\Post("/{id}")
+     * @SWG\Parameter(name="players",
      *     in="body",
      *     required=true,
      *     @SWG\Schema(
-     *          type="object",
-     *          ref=@Model(type=Player::class, groups={"place"})
+     *          type="array",
+     *          @SWG\Items(ref=@Model(type=Player::class, groups={"place"}))
      *     )
      * )
      * @SWG\Response(
      *     response=204,
-     *     description="The grid has been set for the player.",
+     *     description="The grid has been set for the players.",
      *     headers={@SWG\Header(header="Location", description="Link to created resource", type="string")}
      * )
      *
@@ -137,28 +134,18 @@ class BattleController extends AbstractFOSRestController
      * )
      * @SWG\Tag(name="Battle")
      */
-    public function setShips(Battle $battle, Player $player, Request $request, BattleRepository $repository): Response
+    public function setShips(Battle $battle, Request $request, BattleRepository $repository): Response
     {
-        $form = $this->createForm(PlayerType::class, $player, ['battle' => $battle]);
-        $form->submit($request->request->all(), false);
-        
-        if ($battle->hasPlayer($player)) {
-            $form->addError(new FormError('This user has already been added.'));
-        }
+        $form = $this->createForm(BattleType::class, $battle);
+        $form->submit(['players' => $request->request->all()], false);
         
         if (!$form->isValid()) {
             return $this->handleView($this->view($form)->setFormat('json'));
         }
         
-        $battle->addPlayer($player);
         $repository->store($battle);
         
-        $view = $this->view(null, 204)
-                     ->setHeader('Location', $this->generateUrl('get_player', ['battleId' => $battle->getId(),
-                                                                               'id' => $player->getId()]))
-                     ->setFormat('json');
-        
-        return $this->handleView($view);
+        return $this->handleView($this->view(null, 204)->setFormat('json'));
     }
     
     /**

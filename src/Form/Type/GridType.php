@@ -12,7 +12,7 @@ class GridType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('ships', CollectionType::class, ['entry_type' => ShipType::class]);
+        $builder->add('ships', CollectionType::class, ['entry_type' => ShipType::class, 'allow_add' => true]);
     }
     
     public function configureOptions(OptionsResolver $resolver)
