@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class Coordinate
@@ -12,9 +12,9 @@ class Coordinate
      *
      * @var int
      *
-     * @Groups({"place"})
      * @Assert\Type("integer")
      * @Assert\GreaterThanOrEqual(1)
+     * @Serializer\Groups({"Default"})
      */
     private $x;
     
@@ -23,8 +23,8 @@ class Coordinate
      *
      * @var string
      *
-     * @Groups({"place"})
      * @Assert\Type("string")
+     * @Serializer\Groups({"Default"})
      */
     private $y;
     
@@ -61,7 +61,7 @@ class Coordinate
      *
      * @return int
      */
-    public function getYAscii() : int
+    public function getYAscii(): int
     {
         return ord($this->y) - 64;
     }

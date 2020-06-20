@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use App\Enum\PlayerType;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class Player
@@ -17,7 +17,7 @@ class Player
      *
      * @Assert\NotBlank()
      * @Assert\Choice(choices={"A", "B"}, message="Choose a valid player type.")
-     * @Groups({"place"})
+     * @Serializer\Groups({"Default"})
      */
     private $id;
     
@@ -28,7 +28,7 @@ class Player
      *
      * @Assert\Choice(choices=Player::PLAYERTYPES, message="Choose a valid player type.")
      * @Assert\NotBlank()
-     * @Groups({"place"})
+     * @Serializer\Groups({"Default"})
      */
     private $type = PlayerType::REGULAR;
     
@@ -37,7 +37,7 @@ class Player
      *
      * @Assert\NotBlank()
      * @Assert\Valid()
-     * @Groups({"place"})
+     * @Serializer\Groups({"Default"})
      */
     private $grid;
     

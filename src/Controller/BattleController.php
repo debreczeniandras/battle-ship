@@ -155,7 +155,7 @@ class BattleController extends AbstractFOSRestController
         }
         
         $workflow->apply($battle, 'set_players');
-        $repository->store($battle);
+        $repository->store($battle, 'Default');
         
         return $this->handleView($this->view(null, 204)->setFormat('json'));
     }
@@ -200,7 +200,7 @@ class BattleController extends AbstractFOSRestController
         }
         
         $battle->addPlayer($player);
-        $repository->store($battle);
+        $repository->store($battle, 'Default');
         
         $view = $this->view($battle, 201)
                      ->setHeader('Location', $this->generateUrl('get_battle', ['id' => $battle->getId()]))

@@ -52,9 +52,9 @@ class BattleRepository
         return $battle;
     }
     
-    public function store(Battle $battle)
+    public function store(Battle $battle, $contextGroup)
     {
-        $serialized = $this->serializer->serialize($battle, 'json');
+        $serialized = $this->serializer->serialize($battle, 'json', ['groups' => [$contextGroup]]);
         $this->redis->set($battle->getId(), $serialized);
     }
 }

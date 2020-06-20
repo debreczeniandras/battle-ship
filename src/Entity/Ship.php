@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class Ship
@@ -20,7 +20,7 @@ class Ship
      *
      * @Assert\NotBlank()
      * @Assert\Choice(choices=Ship::CHOICES)
-     * @Groups({"place"})
+     * @Serializer\Groups({"Default"})
      */
     private $id;
     
@@ -31,7 +31,7 @@ class Ship
      *
      * @Assert\NotBlank()
      * @Assert\Valid()
-     * @Groups({"place"})
+     * @Serializer\Groups({"Default"})
      */
     private $start;
     
@@ -42,7 +42,7 @@ class Ship
      *
      * @Assert\NotBlank()
      * @Assert\Valid()
-     * @Groups({"place"})
+     * @Serializer\Groups({"Default"})
      */
     private $end;
     

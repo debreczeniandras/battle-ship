@@ -17,7 +17,7 @@ class Grid
      *
      * @var Ship[]|ArrayCollection
      *
-     * @Serializer\Groups({"place"})
+     * @Serializer\Groups({"Default"})
      * @Assert\Count(min="5", max="5")
      * @Assert\Valid()
      */
@@ -95,12 +95,20 @@ class Grid
         return $this;
     }
     
+    /**
+     * check against all the coordingate of the grid
+     * or check ONE ship against all the other coordinates on the board
+     *
+     * @param Ship|null $exclude
+     *
+     * @return array
+     */
     public function getShipCoordinates(Ship $exclude = null)
     {
         $coords = [];
         
         foreach ($this->ships as $ship) {
-            if ($ship->getId() === $exclude->getId()) {
+            if ($exclude && $ship->getId() === $exclude->getId()) {
                 continue;
             }
             
