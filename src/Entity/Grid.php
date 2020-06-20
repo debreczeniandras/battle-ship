@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -22,8 +23,15 @@ class Grid
     
     /**
      * @var Shot[]
+     * @Serializer\Ignore()
      */
     private $shots;
+    
+    private function __construct()
+    {
+        $this->ships = new ArrayCollection();
+        $this->shots = new ArrayCollection();
+    }
     
     public function addShip(Ship $ship)
     {
@@ -46,9 +54,9 @@ class Grid
     }
     
     /**
-     * @return Ship[]
+     * @return Ship[]|ArrayCollection
      */
-    public function getShips(): array
+    public function getShips()
     {
         return $this->ships;
     }
@@ -58,17 +66,17 @@ class Grid
      *
      * @return Grid
      */
-    public function setShips(array $ships): Grid
+    public function setShips(?array $ships = []): Grid
     {
-        $this->ships = $ships;
+        $this->ships = new ArrayCollection($ships);
         
         return $this;
     }
     
     /**
-     * @return Shot[]
+     * @return Shot[]|ArrayCollection
      */
-    public function getShots(): array
+    public function getShots()
     {
         return $this->shots;
     }
@@ -78,9 +86,9 @@ class Grid
      *
      * @return Grid
      */
-    public function setShots(array $shots): Grid
+    public function setShots(?array $shots = []): Grid
     {
-        $this->shots = $shots;
+        $this->shots = new ArrayCollection($shots);
         
         return $this;
     }

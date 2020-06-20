@@ -11,6 +11,9 @@
             "config/routes/annotations.yaml"
         ]
     },
+    "doctrine/collections": {
+        "version": "1.6.5"
+    },
     "doctrine/lexer": {
         "version": "1.2.1"
     },

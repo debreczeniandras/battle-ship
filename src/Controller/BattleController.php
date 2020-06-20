@@ -14,9 +14,11 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Swagger\Annotations as SWG;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * @Rest\Route("/battles")
@@ -132,17 +134,23 @@ class BattleController extends AbstractFOSRestController
      * )
      * @SWG\Tag(name="Battle")
      */
-    public function setShips(Battle $battle, Player $player, Request $request): Response
+    public function setShips(Battle $battle, Player $player, BattleRepository $repository): Response
     {
         $form = $this->createForm(PlayerType::class, $player);
         $form->submit(null, false);
+    
+        if ($battle->hasPlayer($player)) {
+            $form->addError(new FormError('This user has already been added.'));
+        }
         
         if (!$form->isValid()) {
             return $this->handleView($this->view($form)->setFormat('json'));
         }
         
+        $battle->addPlayer($player);
+        $repository->store($battle);
+        
         $view   = $this->view($battle, 201)
-                       ->setContext((new Context())->setGroups(['init']))
                        ->setHeader('Location', $this->generateUrl('get_battle', ['id' => $battle->getId()]))
                        ->setFormat('json');
         

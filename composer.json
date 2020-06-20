@@ -5,6 +5,7 @@
         "php": "^7.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "doctrine/collections": "^1.6",
         "friendsofsymfony/rest-bundle": "^3.0",
         "nelmio/api-doc-bundle": "^3.6",
         "sensio/framework-extra-bundle": "^5.5",

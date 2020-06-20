@@ -6,7 +6,7 @@ framework:
         enabled: true
       marking_store:
         type: method
-        property: currentState
+        property: state
       supports:
         - App\Entity\Battle
       initial_marking: waiting

@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Battle;
 use App\Entity\GameOptions;
+use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Workflow\Registry;
 use SymfonyBundles\RedisBundle\Redis\ClientInterface;
@@ -21,7 +23,7 @@ class BattleRepository
         $this->workflows  = $workflows;
     }
     
-    public function createNewFromOptions(GameOptions $options) : Battle
+    public function createNewFromOptions(GameOptions $options): Battle
     {
         $battle = Battle::newInstance();
         $battle->setOptions($options);
@@ -37,11 +39,22 @@ class BattleRepository
     
     public function findById($id, $contextGroups = []): Battle
     {
-        $data = $this->redis->get($id);
+        $data    = $this->redis->get($id);
+        $context = [AbstractObjectNormalizer::SKIP_NULL_VALUES => true];
+        
+        if ($contextGroups) {
+            $context['groups'] = $contextGroups;
+        }
         
         /** @var Battle $battle */
-        $battle = $this->serializer->deserialize($data, Battle::class, 'json', ['groups' => $contextGroups]);
+        $battle = $this->serializer->deserialize($data, Battle::class, 'json', $context);
         
         return $battle;
+    }
+    
+    public function store(Battle $battle)
+    {
+        $serialized = $this->serializer->serialize($battle, 'json');
+        $this->redis->set($battle->getId(), $serialized);
     }
 }

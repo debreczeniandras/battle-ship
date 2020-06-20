@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use Symfony\Component\HttpFoundation\ParameterBag;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -29,7 +29,7 @@ class Battle
     /**
      * The Players of the battle
      *
-     * @var Player[]
+     * @var Player[]|ArrayCollection
      *
      * @Assert\Count(min="2", max="2")
      */
@@ -43,17 +43,17 @@ class Battle
      * @Serializer\Groups({"init"})
      * @Serializer\SerializedName("state")
      */
-    private $currentState = 'waiting';
+    private $state = 'waiting';
     
     public function __construct()
     {
-        $this->players = new ParameterBag();
+        $this->players = new ArrayCollection();
     }
     
     /**
-     * @return Player[]
+     * @return Player[]|ArrayCollection
      */
-    public function getPlayers(): array
+    public function getPlayers()
     {
         return $this->players;
     }
@@ -65,9 +65,7 @@ class Battle
      */
     public function setPlayers(array $players): Battle
     {
-        foreach ($players as $player) {
-            $this->players->set($player->getId(), $player);
-        }
+        $this->players = new ArrayCollection($players);
         
         return $this;
     }
@@ -79,27 +77,43 @@ class Battle
      */
     public function addPlayer(Player $player): Battle
     {
-        $this->players->set($player->getId(), $player);
-    
+        if (!$this->players->exists(function (Player $item) use ($player) {
+            return $item->getId() == $player->getId();
+        })) {
+            $this->players->add($player);
+        }
+        
         return $this;
+    }
+    
+    /**
+     * @param Player $player
+     *
+     * @return bool
+     */
+    public function hasPlayer(Player $player): bool
+    {
+        return $this->players->exists(function ($key, Player $item) use ($player) {
+            return $item->getId() == $player->getId();
+        });
     }
     
     /**
      * @return string
      */
-    public function getCurrentState(): string
+    public function getState(): string
     {
-        return $this->currentState;
+        return $this->state;
     }
     
     /**
-     * @param string $currentState
+     * @param string $state
      *
      * @return Battle
      */
-    public function setCurrentState(string $currentState): Battle
+    public function setState(string $state): Battle
     {
-        $this->currentState = $currentState;
+        $this->state = $state;
         
         return $this;
     }
