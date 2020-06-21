@@ -13,7 +13,13 @@ class Shot extends Coordinate
      */
     private bool $hit  = false;
     
+    /**
+     * @var bool
+     *
+     * @Serializer\Groups({"Status", "Default"})
+     */
     private bool $sunk = false;
+    
     private bool $won  = false;
     
     public function isHit(): bool
@@ -21,9 +27,9 @@ class Shot extends Coordinate
         return $this->hit;
     }
     
-    public function setHit(): Shot
+    public function setHit($hit): Shot
     {
-        $this->hit = true;
+        $this->hit = $hit;
         
         return $this;
     }
@@ -45,9 +51,9 @@ class Shot extends Coordinate
         return $this->won;
     }
     
-    public function setWon(): Shot
+    public function setWon($won): Shot
     {
-        $this->won = true;
+        $this->won = $won;
         
         return $this;
     }

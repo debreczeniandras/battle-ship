@@ -75,7 +75,7 @@ class BattleManager
         // check if it's a hit against opponents grid
         $opponent = $battle->getOpponent($player);
         if ($opponent->getGrid()->isHit($shot)) {
-            $shot->setHit();
+            $shot->setHit(true);
         }
         
         // take the shot
@@ -94,7 +94,7 @@ class BattleManager
     
         // check win
         if ($this->hasWon($battle, $player)) {
-            $shot->setWon();
+            $shot->setWon(true);
             $this->workflow->apply($player, 'win');
             $this->workflow->apply($battle, 'finish');
         }

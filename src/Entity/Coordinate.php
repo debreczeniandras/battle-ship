@@ -72,6 +72,18 @@ class Coordinate
     }
     
     /**
+     * @param int $y
+     *
+     * @return $this
+     */
+    public function setYAscii(int $y): Coordinate
+    {
+        $this->y = chr($y + 64);
+        
+        return $this;
+    }
+    
+    /**
      * @param string $y
      *
      * @return Coordinate
