@@ -1,4 +1,9 @@
-# Bootstrap with ansible
+# Application Documentation
+
+[Can be accessed here:](doc/DOCUMENTATION.md)
+
+
+# Bootstrap Application with ansible
 
 ## Prerequisites
 
@@ -37,12 +42,12 @@ Install pip and then ansible globally (mind the SUDO)
 
     ansible-playbook -K setup.yml -v
 
-You'll be prompted for your root password.
+You'll be prompted for your root password - which is relevant for apache modules and config changes.
 
 Please select afterwards two available ports for the following services:
 
 * _port_web_ is to reach the docker webserver from outside
-* _port_mysql_ is to reach the docker mysql server from outside
+* _port_redis_ is to reach the redis explorer from outside
  
 
 Sensible defaults are already provided, which you may accept by clicking Enter.
@@ -69,3 +74,5 @@ You need to manually configure the following:
 Execute composer commands by simply prefixing them like this:
     
     docker-compose run --rm app composer {install|require|update}
+
+# 

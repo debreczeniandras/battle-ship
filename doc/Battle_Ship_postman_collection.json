@@ -1,0 +1,588 @@
+{
+	"info": {
+		"_postman_id": "61a64c23-c749-4c02-855f-1a91e36a4dee",
+		"name": "Battle Ship",
+		"description": "Use this API to play a Battle Ship Game",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Set up and prepare for ships.",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "76d567c6-789c-4c1c-a1d5-4f3f7bced23e",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"console.log(\"response:\");",
+							"console.log(\"  data:\");",
+							"",
+							"",
+							"pm.environment.set(\"battleId\", jsonData.id);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"width\": 8,\n    \"height\": 8\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/battles",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"battles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get infos about the battle",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/battles/:id",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"battles",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{battleId}}",
+							"description": "(Required) "
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set up players for this Battle.",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n  {\n    \"id\": \"A\",\n    \"type\": 0,\n    \"grid\": {\n      \"ships\": [\n        {\n          \"id\": \"carrier\",\n          \"start\": {\n            \"x\": 2,\n            \"y\": \"B\"\n          },\n          \"end\": {\n            \"x\": 2,\n            \"y\": \"F\"\n          }\n        },\n        {\n          \"id\": \"battleship\",\n          \"start\": {\n            \"x\": 3,\n            \"y\": \"D\"\n          },\n          \"end\": {\n            \"x\": 6,\n            \"y\": \"D\"\n          }\n        },\n        {\n          \"id\": \"cruiser\",\n          \"start\": {\n            \"x\": 4,\n            \"y\": \"C\"\n          },\n          \"end\": {\n            \"x\": 6,\n            \"y\": \"C\"\n          }\n        },\n        {\n          \"id\": \"submarine\",\n          \"start\": {\n            \"x\": 4,\n            \"y\": \"G\"\n          },\n          \"end\": {\n            \"x\": 6,\n            \"y\": \"G\"\n          }\n        },\n        {\n          \"id\": \"destroyer\",\n          \"start\": {\n            \"x\": 8,\n            \"y\": \"E\"\n          },\n          \"end\": {\n            \"x\": 8,\n            \"y\": \"F\"\n          }\n        }\n      ]\n    }\n  },\n  {\n    \"id\": \"B\",\n    \"type\": 1\n  }\n]"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/battles/:id",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"battles",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{battleId}}",
+							"description": "(Required) "
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Set up players for this Battle.",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n  {\n    \"id\": \"A\",\n    \"type\": 0,\n    \"grid\": {\n      \"ships\": [\n        {\n          \"id\": \"carrier\",\n          \"start\": {\n            \"x\": 2,\n            \"y\": \"B\"\n          },\n          \"end\": {\n            \"x\": 2,\n            \"y\": \"F\"\n          }\n        },\n        {\n          \"id\": \"battleship\",\n          \"start\": {\n            \"x\": 3,\n            \"y\": \"D\"\n          },\n          \"end\": {\n            \"x\": 6,\n            \"y\": \"D\"\n          }\n        },\n        {\n          \"id\": \"cruiser\",\n          \"start\": {\n            \"x\": 4,\n            \"y\": \"C\"\n          },\n          \"end\": {\n            \"x\": 6,\n            \"y\": \"C\"\n          }\n        },\n        {\n          \"id\": \"submarine\",\n          \"start\": {\n            \"x\": 4,\n            \"y\": \"G\"\n          },\n          \"end\": {\n            \"x\": 6,\n            \"y\": \"G\"\n          }\n        },\n        {\n          \"id\": \"destroyer\",\n          \"start\": {\n            \"x\": 8,\n            \"y\": \"E\"\n          },\n          \"end\": {\n            \"x\": 8,\n            \"y\": \"F\"\n          }\n        }\n      ]\n    }\n  },\n  {\n    \"id\": \"B\",\n    \"type\": 1\n  }\n]"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/battles/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"battles",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "<string>",
+									"description": "(Required) "
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Shoot.",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"x\": 3,\n  \"y\": \"E\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/battles/:battleId/players/:playerId/shots",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"battles",
+						":battleId",
+						"players",
+						":playerId",
+						"shots"
+					],
+					"variable": [
+						{
+							"key": "battleId",
+							"value": "{{battleId}}",
+							"description": "(Required) "
+						},
+						{
+							"key": "playerId",
+							"value": "A",
+							"description": "(Required) "
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Shoot - Regular person",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"x\": 3,\n  \"y\": \"D\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/battles/:battleId/players/:playerId/shots",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"battles",
+								":battleId",
+								"players",
+								":playerId",
+								"shots"
+							],
+							"variable": [
+								{
+									"key": "battleId",
+									"value": "{{battleId}}",
+									"description": "(Required) "
+								},
+								{
+									"key": "playerId",
+									"value": "A",
+									"description": "(Required) "
+								}
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sun, 21 Jun 2020 20:11:54 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "nginx/1.17.6"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/7.4.5"
+						},
+						{
+							"key": "X-Debug-Exception",
+							"value": "It%27s%20not%20your%20turn."
+						},
+						{
+							"key": "X-Debug-Exception-File",
+							"value": "%2Fvar%2Fwww%2Fproject%2Fsrc%2FManager%2FBattleManager.php:67"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "X-Robots-Tag",
+							"value": "noindex"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 400,\n    \"message\": \"It's not your turn.\"\n}"
+				},
+				{
+					"name": "Shoot - Computer random",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n \n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/battles/:battleId/players/:playerId/shots",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"battles",
+								":battleId",
+								"players",
+								":playerId",
+								"shots"
+							],
+							"variable": [
+								{
+									"key": "battleId",
+									"value": "{{battleId}}",
+									"description": "(Required) "
+								},
+								{
+									"key": "playerId",
+									"value": "B",
+									"description": "(Required) "
+								}
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sun, 21 Jun 2020 20:11:54 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "nginx/1.17.6"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/7.4.5"
+						},
+						{
+							"key": "X-Debug-Exception",
+							"value": "It%27s%20not%20your%20turn."
+						},
+						{
+							"key": "X-Debug-Exception-File",
+							"value": "%2Fvar%2Fwww%2Fproject%2Fsrc%2FManager%2FBattleManager.php:67"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "X-Robots-Tag",
+							"value": "noindex"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 400,\n    \"message\": \"It's not your turn.\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Get shots of a user.",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/battles/:battleId/players/:playerId/shots",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"battles",
+						":battleId",
+						"players",
+						":playerId",
+						"shots"
+					],
+					"variable": [
+						{
+							"key": "battleId",
+							"value": "{{battleId}}",
+							"description": "(Required) "
+						},
+						{
+							"key": "playerId",
+							"value": "<string>",
+							"description": "(Required) "
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "When a battle with this id can not be found.",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/battles/:battleId/players/:playerId/shots",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"battles",
+								":battleId",
+								"players",
+								":playerId",
+								"shots"
+							],
+							"variable": [
+								{
+									"key": "battleId"
+								},
+								{
+									"key": "playerId"
+								}
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "Returns the rewards of an user",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/battles/:battleId/players/:playerId/shots",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"battles",
+								":battleId",
+								"players",
+								":playerId",
+								"shots"
+							],
+							"variable": [
+								{
+									"key": "battleId"
+								},
+								{
+									"key": "playerId"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "*/*"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "43281c3a-f79c-48ef-9eaf-c5aa2354a644",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "41c9158d-919d-4bc6-8549-805b1eed862f",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "a9e006b9-e920-44b3-a2e5-3a0c4abb6986",
+			"key": "baseUrl",
+			"value": "api.battle.local",
+			"type": "string"
+		},
+		{
+			"id": "860910c1-a0a3-479a-a941-ede4eda569ce",
+			"key": "battleId",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

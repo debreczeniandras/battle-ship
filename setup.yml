@@ -7,10 +7,17 @@
       prompt: "External Web Port"
       default: 60380
       private: no
+    - name: "redis_port" #PORT_REDIS_GUI
+      prompt: "External Port for Redis Explorer"
+      default: 60236
+      private: no
   tasks:
     - name: Persist Variable
       set_fact:
         web_port: "{{web_port}}"
+    - name: Persist Variable
+      set_fact:
+        web_port: "{{redis_port}}"
     - name: Check operating system
       shell: uname
       ignore_errors: yes
