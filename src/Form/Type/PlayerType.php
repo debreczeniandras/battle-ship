@@ -40,7 +40,7 @@ class PlayerType extends AbstractType implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            FormEvents::SUBMIT => ['setRandomBoard'], ['setPlayerState'],
+            FormEvents::SUBMIT => [['setRandomBoard'], ['setPlayerState']]
         ];
     }
     
