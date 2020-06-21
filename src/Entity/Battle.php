@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Swagger\Annotations as SWG;
 use Symfony\Component\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -160,6 +161,13 @@ class Battle
         return $this->id;
     }
     
+    public function getPlayer($id) : Player
+    {
+        return $this->getPlayers()->filter(function(Player $player) use ($id){
+            return $player->getId() === $id;
+        })->first();
+    }
+    
     public static function createNewFromOptions(GameOptions $options): Battle
     {
         $battle = new static();
@@ -242,5 +250,19 @@ class Battle
             $i++;
             $playerIds[] = $player->getId();
         }
+    }
+    
+    /**
+     * @param Player $player
+     *
+     * @return Player
+     *
+     * @SWG\Parameter(type=Player::class)
+     */
+    public function getOpponent(Player $player) : Player
+    {
+        return $this->getPlayers()->filter(function(Player $item) use ($player) {
+            return $item->getId() !== $player->getId();
+        })->first();
     }
 }

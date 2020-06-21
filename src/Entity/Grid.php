@@ -26,7 +26,8 @@ class Grid
     
     /**
      * @var Shot[]
-     * @Serializer\Ignore()
+     *
+     * @Serializer\Groups({"Default"})
      */
     private $shots;
     
@@ -44,16 +45,6 @@ class Grid
     public function addShot(Shot $shot)
     {
         $this->shots->add($shot);
-    }
-    
-    public static function XChoices()
-    {
-        return range(1, self::WIDTH);
-    }
-    
-    public static function YChoices()
-    {
-        return range(1, chr(65 + self::HEIGHT));
     }
     
     /**
@@ -96,6 +87,13 @@ class Grid
         return $this;
     }
     
+    public function hasShot(Shot $shot): bool
+    {
+        return $this->shots->exists(function ($key, Shot $item) use ($shot) {
+            return $item->getY() === $shot->getY() && $item->getY() === $shot->getY();
+        });
+    }
+    
     /**
      * check against all the coordingate of the grid
      * or check ONE ship against all the other coordinates on the board
@@ -122,6 +120,22 @@ class Grid
     }
     
     /**
+     * @return string[]
+     *
+     * @SWG\Items(type="string")
+     */
+    public function getShotCoordinates()
+    {
+        $coords = [];
+        
+        foreach ($this->shots as $shot) {
+            $coords[] = (string) $shot;
+        }
+        
+        return $coords;
+    }
+    
+    /**
      * @param Ship $ship
      *
      * @return bool
@@ -131,6 +145,16 @@ class Grid
     public function isShipOverlapping(Ship $ship): bool
     {
         return (bool)array_intersect($this->getShipCoordinates($ship), $ship->getCoordinates());
+    }
+    
+    /**
+     * @param Shot $shot
+     *
+     * @return bool
+     */
+    public function isHit(Shot $shot): bool
+    {
+        return in_array((string)$shot, $this->getShipCoordinates());
     }
     
     /**

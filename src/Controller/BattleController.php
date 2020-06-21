@@ -177,16 +177,13 @@ class BattleController extends AbstractFOSRestController
      * @param Battle               $battle
      * @param Shot                 $shot
      * @param string               $playerId
-     * @param Request              $request
      * @param BattleManager        $manager
-     *
-     * @param BattleWorkflowHelper $workflow
      *
      * @return Response
      *
      * @ParamConverter("battle", options={"requestParam": "battleId"})
      * @ParamConverter("shot", converter="fos_rest.request_body")
-     * @Rest\POST("/{battleId}/players/{playerId}/shots", name="player_shoot", requirements={"playerId": "(A|B)"})
+     * @Rest\Post("/{battleId}/players/{playerId}/shots", name="player_shoot", requirements={"playerId": "(A|B)"})
      * @SWG\Parameter(name="shot",
      *     in="body",
      *     required=true,
@@ -198,7 +195,8 @@ class BattleController extends AbstractFOSRestController
      * @SWG\Response(
      *     response=201,
      *     description="Shot has been fired.",
-     *     @Model(type=Shot::class)
+     *     @Model(type=Shot::class),
+     *     headers={@SWG\Header(header="Location", description="Link to shoot of the other player.", type="string")}
      * )
      * @SWG\Response(
      *     response=400,
@@ -206,21 +204,15 @@ class BattleController extends AbstractFOSRestController
      * )
      * @SWG\Tag(name="Battle")
      */
-    public function shoot(
-        Battle $battle,
-        Shot $shot,
-        string $playerId,
-        Request $request,
-        BattleManager $manager,
-        BattleWorkflowHelper $workflow
-    ): Response {
-    
-        if ($battle->getState() !== 'playing') {
-            throw new BadRequestHttpException(sprintf('Shooting is not allowed at this state [%s]', $battle->getState()));
-        }
+    public function shoot(Battle $battle, Shot $shot, string $playerId, BattleManager $manager): Response
+    {
+        $manager->shoot($battle, $playerId, $shot);
         
-        $view = $this->view($battle, 201)
-                     ->setHeader('Location', $this->generateUrl('get_battle', ['id' => $battle->getId()]))
+        $view = $this->view($shot, 201)
+                     ->setHeader('Location', $this->generateUrl('player_shoot', [
+                         'battleId' => $battle->getId(),
+                         'playerId' => $playerId === 'A' ? 'B' : 'A'])
+                     )
                      ->setFormat('json');
         
         return $this->handleView($view);

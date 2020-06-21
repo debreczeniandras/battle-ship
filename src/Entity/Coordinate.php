@@ -16,7 +16,7 @@ class Coordinate
      * @Assert\GreaterThanOrEqual(1)
      * @Serializer\Groups({"Default", "Set"})
      */
-    private $x;
+    protected $x;
     
     /**
      * Y Axis - a letter
@@ -26,7 +26,7 @@ class Coordinate
      * @Assert\Type("string")
      * @Serializer\Groups({"Default", "Set"})
      */
-    private $y;
+    protected $y;
     
     /**
      * @return int

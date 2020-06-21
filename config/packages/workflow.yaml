@@ -42,3 +42,6 @@ framework:
         shoot:
           from: shooting
           to: ducking
+        duck:
+          from: ducking
+          to: shooting

@@ -2,7 +2,6 @@
 
 namespace App\Helper;
 
-use App\Entity\Battle;
 use Symfony\Component\Workflow\Registry;
 
 class BattleWorkflowHelper
@@ -15,16 +14,16 @@ class BattleWorkflowHelper
         $this->workflows = $workflows;
     }
     
-    public function apply(Battle $battle, $transition)
+    public function apply($subject, $transition)
     {
-        $workflow = $this->workflows->get($battle);
-        $workflow->apply($battle, $transition);
+        $workflow = $this->workflows->get($subject);
+        $workflow->apply($subject, $transition);
     }
     
-    public function can(Battle $battle, $transition)
+    public function can($subject, $transition)
     {
-        $workflow = $this->workflows->get($battle);
+        $workflow = $this->workflows->get($subject);
         
-        return $workflow->can($battle, $transition);
+        return $workflow->can($subject, $transition);
     }
 }
