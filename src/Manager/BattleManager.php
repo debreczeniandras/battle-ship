@@ -7,6 +7,7 @@ use App\Entity\Player;
 use App\Entity\Shot;
 use App\Helper\BattleWorkflowHelper;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Workflow\Registry;
@@ -28,6 +29,11 @@ class BattleManager
     public function findById($id, $contextGroups = []): Battle
     {
         $data    = $this->redis->get($id);
+        
+        if (is_null($data)) {
+            throw new NotFoundHttpException('This Battle does not exist');
+        }
+        
         $context = [AbstractObjectNormalizer::SKIP_NULL_VALUES => true];
         
         if ($contextGroups) {

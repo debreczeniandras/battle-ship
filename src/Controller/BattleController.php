@@ -6,6 +6,7 @@ use App\Entity\Battle;
 use App\Entity\GameOptions;
 use App\Entity\Player;
 use App\Entity\Shot;
+use App\Enum\PlayerType;
 use App\Form\Type\BattleType;
 use App\Form\Type\GameOptionsType;
 use App\Form\Type\ShotType;
@@ -116,7 +117,7 @@ class BattleController extends AbstractFOSRestController
     }
     
     /**
-     * Set up ships for a player
+     * Set up players for this Battle.
      *
      * @param Battle               $battle
      * @param Request              $request
@@ -126,7 +127,7 @@ class BattleController extends AbstractFOSRestController
      * @return FormInterface|Response
      *
      * @ParamConverter("battle", options={"requestParam": "id"})
-     * @Rest\Post("/{id}")
+     * @Rest\Put("/{id}")
      * @SWG\Parameter(name="players",
      *     in="body",
      *     required=true,
@@ -143,6 +144,10 @@ class BattleController extends AbstractFOSRestController
      * @SWG\Response(
      *     response=400,
      *     description="When a validation error has occured."
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="When a battle with this id can not be found."
      * )
      * @SWG\Tag(name="Battle")
      */
@@ -201,11 +206,15 @@ class BattleController extends AbstractFOSRestController
      *     response=201,
      *     description="Shot has been fired.",
      *     @Model(type=Shot::class, groups={"Default"}),
-     *     headers={@SWG\Header(header="Location", description="Link to shoot of the other player.", type="string")}
+     *     headers={@SWG\Header(header="Location", description="Link to the shots of this player.", type="string")}
      * )
      * @SWG\Response(
      *     response=400,
      *     description="When a validation error has occured."
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="When a battle with this id can not be found."
      * )
      * @SWG\Tag(name="Battle")
      */
@@ -220,11 +229,44 @@ class BattleController extends AbstractFOSRestController
         
         $manager->shoot($battle, $playerId, $shot);
         
-        $linkToShoot = $this->generateUrl('player_s hoot', ['battleId' => $battle->getId(),
-                                                           'playerId' => $playerId === 'A' ? 'B' : 'A']);
+        $linkToShots = $this->generateUrl('get_shots', ['battleId' => $battle->getId(), 'playerId' => $playerId]);
         $view        = $this->view($shot, 201)
-                            ->setHeader('Location', $linkToShoot)
+                            ->setHeader('Location', $linkToShots)
                             ->setFormat('json');
+        
+        return $this->handleView($view);
+    }
+    
+    /**
+     * Get shots of a user.
+     *
+     * @param Battle $battle
+     * @param string $playerId
+     *
+     * @return Response
+     *
+     * @ParamConverter("battle", options={"requestParam": "battleId"})
+     * @Rest\Get("/{battleId}/players/{playerId}/shots", name="get_shots", requirements={"playerId": "(A|B)"})
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns the rewards of an user",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Shot::class, groups={"Default"}))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="When a battle with this id can not be found."
+     * )
+     * @SWG\Tag(name="Battle")
+     */
+    public function getShots(Battle $battle, string $playerId): Response
+    {
+        $shots = $battle->getPlayer($playerId)->getGrid()->getShots();
+        $view  = $this->view($shots, 200)
+                      ->setFormat('json')
+                      ->setContext((new Context())->setGroups(['Default']))->setFormat('json');
         
         return $this->handleView($view);
     }
