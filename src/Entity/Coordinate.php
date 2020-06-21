@@ -14,6 +14,7 @@ class Coordinate
      *
      * @Assert\Type("integer")
      * @Assert\GreaterThanOrEqual(1)
+     * @Assert\NotBlank()
      * @Serializer\Groups({"Default", "Set"})
      */
     protected $x;
@@ -24,6 +25,7 @@ class Coordinate
      * @var string
      *
      * @Assert\Type("string")
+     * @Assert\NotBlank()
      * @Serializer\Groups({"Default", "Set"})
      */
     protected $y;

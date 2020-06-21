@@ -11,6 +11,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -44,7 +45,8 @@ class ShotType extends AbstractType implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            FormEvents::PRE_SET_DATA => 'setRandomShot'
+            FormEvents::PRE_SET_DATA => 'setRandomShot',
+            FormEvents::POST_SUBMIT => 'checkValid'
         ];
     }
     
@@ -63,6 +65,23 @@ class ShotType extends AbstractType implements EventSubscriberInterface
             /** @var Shot $shot */
             $shot = $event->getData();
             $shot->setX($randomShot->getX())->setY($randomShot->getY());
+        }
+    }
+    
+    public function checkValid(FormEvent $event)
+    {
+        /** @var Battle $battle */
+        $battle = $event->getForm()->getConfig()->getOption('battle');
+        
+        /** @var Shot $shot */
+        $shot = $event->getData();
+        
+        if ($shot->getX() > $battle->getOptions()->getWidth()) {
+            $event->getForm()->get('x')->addError(new FormError('Value is out of range.'));
+        }
+        
+        if ($shot->getYAscii() > $battle->getOptions()->getHeight()) {
+            $event->getForm()->get('y')->addError(new FormError('Value is out of range.'));
         }
     }
 }

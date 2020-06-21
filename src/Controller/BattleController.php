@@ -210,6 +210,10 @@ class BattleController extends AbstractFOSRestController
         $form = $this->createForm(ShotType::class, $shot, ['battle' => $battle, 'playerId' => $playerId]);
         $form->submit(null, false);
         
+        if (!$form->isValid()) {
+            return $this->handleView($this->view($form)->setFormat('json'));
+        }
+        
         $manager->shoot($battle, $playerId, $shot);
         
         $view = $this->view($shot, 201)

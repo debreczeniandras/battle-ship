@@ -10,9 +10,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class Grid
 {
-    const WIDTH = 8;
-    const HEIGHT = 8;
-    
     /**
      * The placement of the Ships.
      *

@@ -83,8 +83,15 @@ class BattleManager
         }
         
         // set state of the players
-//        $this->workflow->apply($player, 'shoot');
-//        $this->workflow->apply($opponent, 'duck');
+        $this->workflow->apply($player, 'shoot');
+        $this->workflow->apply($opponent, 'duck');
+    
+        // check win
+        if ($this->hasWon($battle, $player)) {
+            $shot->setWon();
+            $this->workflow->apply($player, 'win');
+            $this->workflow->apply($battle, 'finish');
+        }
         
         // persist
         $this->store($battle, 'Default');
@@ -92,7 +99,7 @@ class BattleManager
         return $shot;
     }
     
-    private function isShipSunk(Battle $battle, Player $player, Shot $shot)
+    private function isShipSunk(Battle $battle, Player $player, Shot $shot): bool
     {
         $opponent = $battle->getOpponent($player);
         
@@ -108,5 +115,14 @@ class BattleManager
         $shipHits = array_intersect($ship->getCoordinates(), $player->getGrid()->getShotCoordinates());
         
         return count($shipHits) === $ship->getLength();
+    }
+    
+    private function hasWon(Battle $battle, Player $player): bool
+    {
+        $opponent = $battle->getOpponent($player);
+        $allHits  = array_intersect($player->getGrid()->getShotCoordinates(),
+                                    $opponent->getGrid()->getShipCoordinates());
+        
+        return count($allHits) === count($opponent->getGrid()->getShipCoordinates());
     }
 }
