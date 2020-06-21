@@ -24,7 +24,7 @@ class Grid
     /**
      * @var Shot[]
      *
-     * @Serializer\Groups({"Default"})
+     * @Serializer\Groups({"Default", "Status"})
      */
     private $shots;
     

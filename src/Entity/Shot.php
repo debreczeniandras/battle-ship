@@ -2,11 +2,17 @@
 
 namespace App\Entity;
 
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation as Serializer;
 
 class Shot extends Coordinate
 {
+    /**
+     * @var bool
+     *
+     * @Serializer\Groups("Status", "Default")
+     */
     private bool $hit  = false;
+    
     private bool $sunk = false;
     private bool $won  = false;
     

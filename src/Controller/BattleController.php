@@ -99,7 +99,7 @@ class BattleController extends AbstractFOSRestController
      * @SWG\Response(
      *     response=200,
      *     description="Get current infos about the battle.",
-     *     @Model(type=Battle::class, groups={"Default"})
+     *     @Model(type=Battle::class, groups={"Status"})
      * )
      * @SWG\Response(
      *     response=404,
@@ -110,7 +110,7 @@ class BattleController extends AbstractFOSRestController
     public function getBattle(Battle $battle): Response
     {
         $view = $this->view($battle, 200);
-        $view->setContext((new Context())->setGroups(['Default']))->setFormat('json');
+        $view->setContext((new Context())->setGroups(['Status']))->setFormat('json');
         
         return $this->handleView($view);
     }

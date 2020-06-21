@@ -17,7 +17,7 @@ class Player
      *
      * @Assert\NotBlank()
      * @Assert\Choice(choices={"A", "B"}, message="Choose a valid player type.")
-     * @Serializer\Groups({"Default", "Set"})
+     * @Serializer\Groups({"Default", "Set", "Status"})
      */
     private $id;
     
@@ -28,7 +28,7 @@ class Player
      *
      * @Assert\Choice(choices=Player::PLAYERTYPES, message="Choose a valid player type.")
      * @Assert\NotBlank()
-     * @Serializer\Groups({"Default", "Set"})
+     * @Serializer\Groups({"Default", "Set", "Status"})
      */
     private $type = PlayerType::REGULAR;
     
@@ -37,7 +37,7 @@ class Player
      *
      * @Assert\NotBlank()
      * @Assert\Valid()
-     * @Serializer\Groups({"Default", "Set"})
+     * @Serializer\Groups({"Default", "Set", "Status"})
      */
     private $grid;
     
@@ -46,7 +46,7 @@ class Player
      *
      * @var string
      *
-     * @Serializer\Groups({"Default"})
+     * @Serializer\Groups({"Default", "Status"})
      */
     private $state = 'shooting';
     

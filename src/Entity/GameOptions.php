@@ -16,7 +16,7 @@ class GameOptions
      * @Assert\Type("integer")
      * @Assert\Range(min="8", max="15", minMessage="This value should be greater than 8")
      * @SWG\Property(default="8")
-     * @Serializer\Groups({"Default", "Init"})
+     * @Serializer\Groups({"Default", "Status"})
      */
     private $width = 8;
     
@@ -28,7 +28,7 @@ class GameOptions
      * @Assert\Type("integer")
      * @Assert\Range(min="8", max="15")
      * @SWG\Property(default="8")
-     * @Serializer\Groups({"Default", "Init"})
+     * @Serializer\Groups({"Default", "Status"})
      */
     private $height = 8;
     

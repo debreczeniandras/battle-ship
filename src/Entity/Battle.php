@@ -13,7 +13,7 @@ class Battle
     /**
      * @var string
      *
-     * @Serializer\Groups({"Default", "Init"})
+     * @Serializer\Groups({"Default", "Init", "Status"})
      */
     private $id;
     
@@ -24,7 +24,7 @@ class Battle
      *
      * @Assert\NotBlank()
      * @Assert\Valid()
-     * @Serializer\Groups({"Default", "Init"})
+     * @Serializer\Groups({"Default", "Init", "Status"})
      */
     private $options;
     
@@ -35,7 +35,7 @@ class Battle
      *
      * @Assert\Count(min="2", max="2")
      * @Assert\Valid()
-     * @Serializer\Groups({"Default"})
+     * @Serializer\Groups({"Default", "Status"})
      */
     private $players;
     
@@ -44,7 +44,7 @@ class Battle
      *
      * @var string
      *
-     * @Serializer\Groups({"Default", "Init"})
+     * @Serializer\Groups({"Default", "Init", "Status"})
      */
     private $state = 'waiting';
     
