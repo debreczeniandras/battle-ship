@@ -7,14 +7,14 @@ use App\Entity\Coordinate;
 use App\Entity\Grid;
 use App\Entity\Ship;
 
-class GridHelper
+final class GridHelper
 {
     const CHOICES = ["carrier" => 5, "battleship" => 4, "cruiser" => 3, "submarine" => 3, "destroyer" => 2];
     const VERTICAL = 'vertical';
     const HORIZONTAL = 'horizontal';
     const LAYOUT = [self::HORIZONTAL, self::VERTICAL];
     
-    public function getRandomGrid(Battle $battle)
+    public static function getRandomGrid(Battle $battle)
     {
         $width  = $battle->getOptions()->getWidth();
         $height = $battle->getOptions()->getHeight();
@@ -56,15 +56,4 @@ class GridHelper
         
         return $grid;
     }
-    
-    public static function XChoices()
-    {
-        return range(1, self::WIDTH);
-    }
-    
-    public static function YChoices()
-    {
-        return range(1, chr(65 + self::HEIGHT));
-    }
-    
 }

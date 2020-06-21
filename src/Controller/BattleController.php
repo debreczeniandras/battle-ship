@@ -8,6 +8,7 @@ use App\Entity\Player;
 use App\Entity\Shot;
 use App\Form\Type\BattleType;
 use App\Form\Type\GameOptionsType;
+use App\Form\Type\ShotType;
 use App\Helper\BattleWorkflowHelper;
 use App\Manager\BattleManager;
 use FOS\RestBundle\Context\Context;
@@ -195,7 +196,7 @@ class BattleController extends AbstractFOSRestController
      * @SWG\Response(
      *     response=201,
      *     description="Shot has been fired.",
-     *     @Model(type=Shot::class),
+     *     @Model(type=Shot::class, groups={"Default"}),
      *     headers={@SWG\Header(header="Location", description="Link to shoot of the other player.", type="string")}
      * )
      * @SWG\Response(
@@ -204,8 +205,11 @@ class BattleController extends AbstractFOSRestController
      * )
      * @SWG\Tag(name="Battle")
      */
-    public function shoot(Battle $battle, Shot $shot, string $playerId, BattleManager $manager): Response
+    public function shoot(Battle $battle, string $playerId, BattleManager $manager, Shot $shot = null): Response
     {
+        $form = $this->createForm(ShotType::class, $shot, ['battle' => $battle, 'playerId' => $playerId]);
+        $form->submit(null, false);
+        
         $manager->shoot($battle, $playerId, $shot);
         
         $view = $this->view($shot, 201)

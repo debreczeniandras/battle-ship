@@ -3,6 +3,7 @@
 namespace App\Form\Type;
 
 use App\Entity\Battle;
+use App\Entity\Grid;
 use App\Entity\Player;
 use App\Helper\GridHelper;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -15,14 +16,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PlayerType extends AbstractType implements EventSubscriberInterface
 {
-    /** @var GridHelper */
-    private GridHelper $gridHelper;
-    
-    public function __construct(GridHelper $gridHelper)
-    {
-        $this->gridHelper = $gridHelper;
-    }
-    
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('id', ChoiceType::class, ['choices' => ['A', 'B']]);
@@ -50,7 +43,7 @@ class PlayerType extends AbstractType implements EventSubscriberInterface
         $player = $event->getData();
         if ($player->getType() === \App\Enum\PlayerType::COMPUTER) {
             $battle = $event->getForm()->getRoot()->getData();
-            $grid   = $this->gridHelper->getRandomGrid($battle);
+            $grid   = GridHelper::getRandomGrid($battle);
             
             $player->setGrid($grid);
         }

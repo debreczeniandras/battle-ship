@@ -90,7 +90,7 @@ class Grid
     public function hasShot(Shot $shot): bool
     {
         return $this->shots->exists(function ($key, Shot $item) use ($shot) {
-            return $item->getY() === $shot->getY() && $item->getY() === $shot->getY();
+            return $item->getX() === $shot->getX() && $item->getY() === $shot->getY();
         });
     }
     
