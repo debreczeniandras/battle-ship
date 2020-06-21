@@ -30,7 +30,7 @@ class Battle
     /**
      * The Players of the battle
      *
-     * @var Player[]|ArrayCollection
+     * @var Player[]
      *
      * @Assert\Count(min="2", max="2")
      * @Assert\Valid()

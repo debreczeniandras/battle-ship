@@ -60,6 +60,8 @@ class Coordinate
      * Get the ASCII Int equivalent.
      *
      * @return int
+     *
+     * @Serializer\Ignore()
      */
     public function getYAscii(): int
     {

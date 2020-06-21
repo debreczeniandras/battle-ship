@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Swagger\Annotations as SWG;
 use Symfony\Component\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -106,6 +107,11 @@ class Ship
         return $this;
     }
     
+    /**
+     * @return string[]
+     *
+     * @SWG\Items(type="string")
+     */
     public function getCoordinates(): array
     {
         $coords = [];

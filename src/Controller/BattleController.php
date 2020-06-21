@@ -5,11 +5,11 @@ namespace App\Controller;
 use App\Entity\Battle;
 use App\Entity\GameOptions;
 use App\Entity\Player;
+use App\Entity\Shot;
 use App\Form\Type\BattleType;
 use App\Form\Type\GameOptionsType;
-use App\Form\Type\PlayerType;
 use App\Helper\BattleWorkflowHelper;
-use App\Repository\BattleRepository;
+use App\Manager\BattleManager;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -20,7 +20,6 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * @Rest\Route("/battles")
@@ -33,7 +32,7 @@ class BattleController extends AbstractFOSRestController
      * @param GameOptions          $options
      * @param Request              $request
      * @param BattleWorkflowHelper $workflow
-     * @param BattleRepository     $repository
+     * @param BattleManager        $manager
      *
      * @return FormInterface|Response
      *
@@ -64,7 +63,7 @@ class BattleController extends AbstractFOSRestController
         GameOptions $options,
         Request $request,
         BattleWorkflowHelper $workflow,
-        BattleRepository $repository
+        BattleManager $manager
     ): Response {
         $form = $this->createForm(GameOptionsType::class, $options);
         $form->submit($request->request->all(), false);
@@ -76,7 +75,7 @@ class BattleController extends AbstractFOSRestController
         $battle = Battle::createNewFromOptions($options);
         $workflow->apply($battle, 'set_options');
         
-        $repository->store($battle, 'Init');
+        $manager->store($battle, 'Init');
         
         $view = $this->view($battle, 201)
                      ->setContext((new Context())->setGroups(['Init']))
@@ -120,7 +119,7 @@ class BattleController extends AbstractFOSRestController
      * @param Battle               $battle
      * @param Request              $request
      * @param BattleWorkflowHelper $workflow
-     * @param BattleRepository     $repository
+     * @param BattleManager        $manager
      *
      * @return FormInterface|Response
      *
@@ -131,7 +130,7 @@ class BattleController extends AbstractFOSRestController
      *     required=true,
      *     @SWG\Schema(
      *          type="array",
-     *          @SWG\Items(ref=@Model(type=Player::class, groups={"place"}))
+     *          @SWG\Items(ref=@Model(type=Player::class))
      *     )
      * )
      * @SWG\Response(
@@ -150,7 +149,7 @@ class BattleController extends AbstractFOSRestController
         Battle $battle,
         Request $request,
         BattleWorkflowHelper $workflow,
-        BattleRepository $repository
+        BattleManager $manager
     ): Response {
         $form = $this->createForm(BattleType::class, $battle);
         $form->submit(['players' => $request->request->all()], false);
@@ -166,53 +165,44 @@ class BattleController extends AbstractFOSRestController
         }
         
         $workflow->apply($battle, 'set_players');
-        $repository->store($battle, 'Default');
+        $manager->store($battle, 'Default');
         
         return $this->handleView($this->view(null, 204)->setFormat('json'));
     }
     
     /**
-     * Get player data
+     * Shoot.
      *
-     * @param Battle           $battle
-     * @param Player           $player
+     * @param Battle        $battle
+     * @param Request       $request
+     * @param BattleManager $manager
      *
-     * @param Request          $request
-     * @param BattleRepository $repository
-     *
-     * @return FormInterface|Response
+     * @return Response
      *
      * @ParamConverter("battle", options={"requestParam": "battleId"})
-     * @Rest\GET("/{battleId}/players/{id}", name="get_player")
-     * @SWG\Response(
-     *     response=200,
-     *     description="The grid has been set for the player.",
-     *     headers={@SWG\Header(header="Location", description="Link to created resource", type="string")},
-     *     @Model(type=Battle::class, groups={"place"})
+     * @ParamConverter("shot", converter="fos_rest.request_body")
+     * @Rest\POST("/{battleId}/players/{id}/shots", name="player_shoot")
+     * @SWG\Parameter(name="shot",
+     *     in="body",
+     *     required=true,
+     *     @SWG\Schema(
+     *          type="object",
+     *          ref=@Model(type=Shot::class, groups={"Default"})
+     *     )
      * )
-     *
+     * @SWG\Response(
+     *     response=201,
+     *     description="Shot has been fired.",
+     *     @Model(type=Shot::class)
+     * )
      * @SWG\Response(
      *     response=400,
      *     description="When a validation error has occured."
      * )
      * @SWG\Tag(name="Battle")
      */
-    public function getPlayer(Battle $battle, Player $player, Request $request, BattleRepository $repository): Response
+    public function shoot(Battle $battle, Shot $shot, Request $request, BattleManager $manager): Response
     {
-        $form = $this->createForm(PlayerType::class, $player, ['battle' => $battle]);
-        $form->submit($request->request->all(), false);
-        
-        if ($battle->hasPlayer($player)) {
-            $form->addError(new FormError('This user has already been added.'));
-        }
-        
-        if (!$form->isValid()) {
-            return $this->handleView($this->view($form)->setFormat('json'));
-        }
-        
-        $battle->addPlayer($player);
-        $repository->store($battle, 'Default');
-        
         $view = $this->view($battle, 201)
                      ->setHeader('Location', $this->generateUrl('get_battle', ['id' => $battle->getId()]))
                      ->setFormat('json');

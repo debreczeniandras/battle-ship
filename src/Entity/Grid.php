@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Swagger\Annotations as SWG;
 use Symfony\Component\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -15,7 +16,7 @@ class Grid
     /**
      * The placement of the Ships.
      *
-     * @var Ship[]|ArrayCollection
+     * @var Ship[]
      *
      * @Serializer\Groups({"Default"})
      * @Assert\Count(min="5", max="5")
@@ -101,7 +102,9 @@ class Grid
      *
      * @param Ship|null $exclude
      *
-     * @return array
+     * @return string[]
+     *
+     * @SWG\Items(type="string")
      */
     public function getShipCoordinates(Ship $exclude = null)
     {

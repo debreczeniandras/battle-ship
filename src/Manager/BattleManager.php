@@ -1,16 +1,14 @@
 <?php
 
-namespace App\Repository;
+namespace App\Manager;
 
 use App\Entity\Battle;
-use App\Entity\GameOptions;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Workflow\Registry;
 use SymfonyBundles\RedisBundle\Redis\ClientInterface;
 
-class BattleRepository
+class BattleManager
 {
     private ClientInterface     $redis;
     private SerializerInterface $serializer;

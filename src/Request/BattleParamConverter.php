@@ -3,8 +3,7 @@
 namespace App\Request;
 
 use App\Entity\Battle;
-use App\Entity\Player;
-use App\Repository\BattleRepository;
+use App\Manager\BattleManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,13 +11,13 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class BattleParamConverter implements ParamConverterInterface
 {
-    /** @var BattleRepository */
-    private BattleRepository $repository;
+    /** @var BattleManager */
+    private BattleManager $repository;
     
     /** @var SerializerInterface */
     private SerializerInterface $serializer;
     
-    public function __construct(BattleRepository $repository, SerializerInterface $serializer)
+    public function __construct(BattleManager $repository, SerializerInterface $serializer)
     {
         $this->repository = $repository;
         $this->serializer = $serializer;
