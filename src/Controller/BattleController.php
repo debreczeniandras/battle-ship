@@ -6,7 +6,6 @@ use App\Entity\Battle;
 use App\Entity\GameOptions;
 use App\Entity\Player;
 use App\Entity\Shot;
-use App\Enum\PlayerType;
 use App\Form\Type\BattleType;
 use App\Form\Type\GameOptionsType;
 use App\Form\Type\ShotType;
@@ -22,7 +21,6 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * @Rest\Route("/battles")
@@ -40,20 +38,20 @@ class BattleController extends AbstractFOSRestController
      * @return FormInterface|Response
      *
      * @ParamConverter("options", converter="fos_rest.request_body")
-     * @Rest\Post("/")
+     * @Rest\Post()
      * @SWG\Parameter(name="options",
      *     in="body",
      *     required=true,
      *     @SWG\Schema(
      *          type="object",
-     *          ref=@Model(type=GameOptions::class)
+     *          ref=@Model(type=GameOptions::class, groups={"Init"})
      *     )
      * )
      * @SWG\Response(
      *     response=201,
      *     description="The Battle is set.",
      *     headers={@SWG\Header(header="Location", description="Link to created battle", type="string")},
-     *     @Model(type=Battle::class)
+     *     @Model(type=Battle::class, groups={"Init"})
      * )
      *
      * @SWG\Response(
@@ -139,7 +137,7 @@ class BattleController extends AbstractFOSRestController
      * @SWG\Response(
      *     response=204,
      *     description="The grid has been set for the players.",
-     *     headers={@SWG\Header(header="Location", description="Link to shoot with the first user", type="string")}
+     *     headers={@SWG\Header(header="Location", description="Link to player shots", type="string")}
      * )
      * @SWG\Response(
      *     response=400,
@@ -199,7 +197,7 @@ class BattleController extends AbstractFOSRestController
      *     required=true,
      *     @SWG\Schema(
      *          type="object",
-     *          ref=@Model(type=Shot::class, groups={"Default"})
+     *          ref=@Model(type=Shot::class, groups={"Shoot"})
      *     )
      * )
      * @SWG\Response(

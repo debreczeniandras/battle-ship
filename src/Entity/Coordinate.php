@@ -15,7 +15,7 @@ class Coordinate
      * @Assert\Type("integer")
      * @Assert\GreaterThanOrEqual(1)
      * @Assert\NotBlank()
-     * @Serializer\Groups({"Default", "Set", "Status"})
+     * @Serializer\Groups({"Default", "Set", "Status", "Shoot"})
      */
     protected $x;
     
@@ -26,7 +26,8 @@ class Coordinate
      *
      * @Assert\Type("string")
      * @Assert\NotBlank()
-     * @Serializer\Groups({"Default", "Set", "Status"})
+     * @Assert\Regex(pattern="/^[A-Z]$/")
+     * @Serializer\Groups({"Default", "Set", "Status", "Shoot"})
      */
     protected $y;
     
