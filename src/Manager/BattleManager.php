@@ -84,7 +84,7 @@ class BattleManager
         // check if a ship has been sunk
         if ($shot->isHit()) {
             if ($this->isShipSunk($battle, $player, $shot)) {
-                $shot->setSunk();
+                $shot->setSunk(true);
             }
         }
         

@@ -58,13 +58,13 @@ class ShotType extends AbstractType implements EventSubscriberInterface
         
         $player = $battle->getPlayer($playerId);
         
-        // if current player is a compouter, then get a calculated shot
+        // if current player is a computer, then get a calculated shot
         if ($player->getType() === \App\Enum\PlayerType::COMPUTER) {
-            $randomShot = ShotHelper::getRandomShot($battle, $player);
+            $bestShot = ShotHelper::getBestShot($battle, $player);
     
             /** @var Shot $shot */
             $shot = $event->getData();
-            $shot->setX($randomShot->getX())->setY($randomShot->getY());
+            $shot->setX($bestShot->getX())->setY($bestShot->getY());
         }
     }
     

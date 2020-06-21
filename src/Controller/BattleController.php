@@ -189,7 +189,7 @@ class BattleController extends AbstractFOSRestController
      *
      * @return Response
      *
-     * @ParamConverter("battle", options={"requestParam": "battleId"})
+     * @ParamConverter("battle", options={"requestParam": "battleId", "contextGroups": "Default"})
      * @ParamConverter("shot", converter="fos_rest.request_body")
      * @Rest\Post("/{battleId}/players/{playerId}/shots", name="player_shoot", requirements={"playerId": "(A|B)"})
      * @SWG\Parameter(name="shot",
