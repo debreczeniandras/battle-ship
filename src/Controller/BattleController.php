@@ -51,7 +51,7 @@ class BattleController extends AbstractFOSRestController
      * @SWG\Response(
      *     response=201,
      *     description="The Battle is set.",
-     *     headers={@SWG\Header(header="Location", description="Link to created resource", type="string")},
+     *     headers={@SWG\Header(header="Location", description="Link to created battle", type="string")},
      *     @Model(type=Battle::class)
      * )
      *
@@ -138,9 +138,8 @@ class BattleController extends AbstractFOSRestController
      * @SWG\Response(
      *     response=204,
      *     description="The grid has been set for the players.",
-     *     headers={@SWG\Header(header="Location", description="Link to created resource", type="string")}
+     *     headers={@SWG\Header(header="Location", description="Link to shoot with the first user", type="string")}
      * )
-     *
      * @SWG\Response(
      *     response=400,
      *     description="When a validation error has occured."
@@ -169,16 +168,21 @@ class BattleController extends AbstractFOSRestController
         $workflow->apply($battle, 'set_players');
         $manager->store($battle, 'Default');
         
-        return $this->handleView($this->view(null, 204)->setFormat('json'));
+        $linkToShoot = $this->generateUrl('player_shoot', ['battleId' => $battle->getId(), 'playerId' => 'A']);
+        $view        = $this->view(null, 204)
+                            ->setFormat('json')
+                            ->setHeader('Location', $linkToShoot);
+        
+        return $this->handleView($view);
     }
     
     /**
      * Shoot.
      *
-     * @param Battle               $battle
-     * @param Shot                 $shot
-     * @param string               $playerId
-     * @param BattleManager        $manager
+     * @param Battle        $battle
+     * @param Shot          $shot
+     * @param string        $playerId
+     * @param BattleManager $manager
      *
      * @return Response
      *
@@ -216,12 +220,11 @@ class BattleController extends AbstractFOSRestController
         
         $manager->shoot($battle, $playerId, $shot);
         
-        $view = $this->view($shot, 201)
-                     ->setHeader('Location', $this->generateUrl('player_shoot', [
-                         'battleId' => $battle->getId(),
-                         'playerId' => $playerId === 'A' ? 'B' : 'A'])
-                     )
-                     ->setFormat('json');
+        $linkToShoot = $this->generateUrl('player_s hoot', ['battleId' => $battle->getId(),
+                                                           'playerId' => $playerId === 'A' ? 'B' : 'A']);
+        $view        = $this->view($shot, 201)
+                            ->setHeader('Location', $linkToShoot)
+                            ->setFormat('json');
         
         return $this->handleView($view);
     }

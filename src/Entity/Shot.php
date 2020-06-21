@@ -9,7 +9,7 @@ class Shot extends Coordinate
     /**
      * @var bool
      *
-     * @Serializer\Groups("Status", "Default")
+     * @Serializer\Groups({"Status", "Default"})
      */
     private bool $hit  = false;
     
