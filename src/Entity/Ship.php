@@ -21,7 +21,7 @@ class Ship
      *
      * @Assert\NotBlank()
      * @Assert\Choice(choices=Ship::CHOICES)
-     * @Serializer\Groups({"Default"})
+     * @Serializer\Groups({"Default", "Set"})
      */
     private $id;
     
@@ -32,7 +32,7 @@ class Ship
      *
      * @Assert\NotBlank()
      * @Assert\Valid()
-     * @Serializer\Groups({"Default"})
+     * @Serializer\Groups({"Default", "Set"})
      */
     private $start;
     
@@ -43,7 +43,7 @@ class Ship
      *
      * @Assert\NotBlank()
      * @Assert\Valid()
-     * @Serializer\Groups({"Default"})
+     * @Serializer\Groups({"Default", "Set"})
      */
     private $end;
     

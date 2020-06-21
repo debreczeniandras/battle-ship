@@ -18,7 +18,7 @@ class Grid
      *
      * @var Ship[]
      *
-     * @Serializer\Groups({"Default"})
+     * @Serializer\Groups({"Default", "Set"})
      * @Assert\Count(min="5", max="5")
      * @Assert\Valid()
      */

@@ -40,7 +40,7 @@ class PlayerType extends AbstractType implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            FormEvents::SUBMIT => 'setRandomBoard',
+            FormEvents::SUBMIT => ['setRandomBoard'], ['setPlayerState'],
         ];
     }
     
@@ -51,8 +51,23 @@ class PlayerType extends AbstractType implements EventSubscriberInterface
         if ($player->getType() === \App\Enum\PlayerType::COMPUTER) {
             $battle = $event->getForm()->getRoot()->getData();
             $grid   = $this->gridHelper->getRandomGrid($battle);
-
+            
             $player->setGrid($grid);
+        }
+    }
+    
+    /**
+     * Player A should have the state to shoot,
+     * Player B should have the state to wait.
+     *
+     * @param FormEvent $event
+     */
+    public function setPlayerState(FormEvent $event)
+    {
+        /** @var Player $player */
+        $player = $event->getData();
+        if ($player->getId() === 'B') {
+            $player->setState('ducking');
         }
     }
 }

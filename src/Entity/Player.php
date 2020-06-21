@@ -17,7 +17,7 @@ class Player
      *
      * @Assert\NotBlank()
      * @Assert\Choice(choices={"A", "B"}, message="Choose a valid player type.")
-     * @Serializer\Groups({"Default"})
+     * @Serializer\Groups({"Default", "Set"})
      */
     private $id;
     
@@ -28,7 +28,7 @@ class Player
      *
      * @Assert\Choice(choices=Player::PLAYERTYPES, message="Choose a valid player type.")
      * @Assert\NotBlank()
-     * @Serializer\Groups({"Default"})
+     * @Serializer\Groups({"Default", "Set"})
      */
     private $type = PlayerType::REGULAR;
     
@@ -37,9 +37,18 @@ class Player
      *
      * @Assert\NotBlank()
      * @Assert\Valid()
-     * @Serializer\Groups({"Default"})
+     * @Serializer\Groups({"Default", "Set"})
      */
     private $grid;
+    
+    /**
+     * The state of the shooter. Player is either ducking or shooting.
+     *
+     * @var string
+     *
+     * @Serializer\Groups({"Default"})
+     */
+    private $state = 'shooting';
     
     /**
      * @return string
@@ -97,6 +106,26 @@ class Player
     public function setGrid(Grid $grid): Player
     {
         $this->grid = $grid;
+        
+        return $this;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getState(): string
+    {
+        return $this->state;
+    }
+    
+    /**
+     * @param string $state
+     *
+     * @return Player
+     */
+    public function setState(string $state): Player
+    {
+        $this->state = $state;
         
         return $this;
     }

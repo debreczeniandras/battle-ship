@@ -25,3 +25,20 @@ framework:
         finish:
           from: [playing]
           to:   finished
+    player_shoot:
+      type: 'state_machine'
+      audit_trail:
+        enabled: true
+      marking_store:
+        type: method
+        property: state
+      supports:
+        - App\Entity\Player
+      initial_marking: ducking
+      places:
+        - ducking
+        - shooting
+      transitions:
+        shoot:
+          from: shooting
+          to: ducking

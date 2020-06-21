@@ -20,6 +20,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * @Rest\Route("/battles")
@@ -130,7 +131,7 @@ class BattleController extends AbstractFOSRestController
      *     required=true,
      *     @SWG\Schema(
      *          type="array",
-     *          @SWG\Items(ref=@Model(type=Player::class))
+     *          @SWG\Items(ref=@Model(type=Player::class, groups={"Set"}))
      *     )
      * )
      * @SWG\Response(
@@ -173,15 +174,19 @@ class BattleController extends AbstractFOSRestController
     /**
      * Shoot.
      *
-     * @param Battle        $battle
-     * @param Request       $request
-     * @param BattleManager $manager
+     * @param Battle               $battle
+     * @param Shot                 $shot
+     * @param string               $playerId
+     * @param Request              $request
+     * @param BattleManager        $manager
+     *
+     * @param BattleWorkflowHelper $workflow
      *
      * @return Response
      *
      * @ParamConverter("battle", options={"requestParam": "battleId"})
      * @ParamConverter("shot", converter="fos_rest.request_body")
-     * @Rest\POST("/{battleId}/players/{id}/shots", name="player_shoot")
+     * @Rest\POST("/{battleId}/players/{playerId}/shots", name="player_shoot", requirements={"playerId": "(A|B)"})
      * @SWG\Parameter(name="shot",
      *     in="body",
      *     required=true,
@@ -201,8 +206,19 @@ class BattleController extends AbstractFOSRestController
      * )
      * @SWG\Tag(name="Battle")
      */
-    public function shoot(Battle $battle, Shot $shot, Request $request, BattleManager $manager): Response
-    {
+    public function shoot(
+        Battle $battle,
+        Shot $shot,
+        string $playerId,
+        Request $request,
+        BattleManager $manager,
+        BattleWorkflowHelper $workflow
+    ): Response {
+    
+        if ($battle->getState() !== 'playing') {
+            throw new BadRequestHttpException(sprintf('Shooting is not allowed at this state [%s]', $battle->getState()));
+        }
+        
         $view = $this->view($battle, 201)
                      ->setHeader('Location', $this->generateUrl('get_battle', ['id' => $battle->getId()]))
                      ->setFormat('json');

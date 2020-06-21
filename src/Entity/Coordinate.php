@@ -14,7 +14,7 @@ class Coordinate
      *
      * @Assert\Type("integer")
      * @Assert\GreaterThanOrEqual(1)
-     * @Serializer\Groups({"Default"})
+     * @Serializer\Groups({"Default", "Set"})
      */
     private $x;
     
@@ -24,7 +24,7 @@ class Coordinate
      * @var string
      *
      * @Assert\Type("string")
-     * @Serializer\Groups({"Default"})
+     * @Serializer\Groups({"Default", "Set"})
      */
     private $y;
     
