@@ -58,14 +58,30 @@ Sensible defaults are already provided, which you may accept by clicking Enter.
 
 The apache playbook is completely ignored on other systems than Linux.
 
-You may need to manually configure the following.
+That means the playbook can be executed without elevated privileges:
+  
+    ansible-playbook setup.yml -v
+
+You may need to manually configure the following afterwards
  
 * create a host entry `api.battle.local` in your hosts file, that should resolve to 127.0.0.1
 * to have the best experience, use a local webserver on the host machine to proxy all requests from host to the docker web service on the web port provided above.
 (i.e. api.battle.local --> localhost:62080) This helps avoiding using a port number in the urls.
 
-## EXECUTE COMPOSER COMMANDS
+## Without ansible
+
+* copy .env.dist to .env
+* fill out the needed ports
+* docker-compose up --build -d
+* enjoy!
+
+## EXECUTE PHP COMMANDS
 
 Execute composer commands by simply prefixing them like this:
     
     docker-compose run --rm app composer {install|require|update}
+    
+Execute php commands by simply prefixing them like this:
+    
+    docker-compose run --rm app {command|bin/phpunit}
+

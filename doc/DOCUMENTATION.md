@@ -56,14 +56,21 @@ Regular user needs to send coordinates
       "y": "E"
     }
     
-Computer user only a post request
+Computer type of player need only a post request with "empty" body. 
 
     {
     }
-
 
 ### Status
 
 GET /battles/:battleId
 
-Get the status of the battle. (Check if it's still running or it has been finished for example.)
+Get the status of the battle. This should be called after/before shooting, 
+to check if the battle has already been won for example. 
+
+
+### Get the shots of a player
+
+GET /api/v1/battles/{battleId}/players/{playerId}/shots
+
+This lists all the shots that have been fired by a user.

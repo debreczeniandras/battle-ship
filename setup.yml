@@ -17,7 +17,7 @@
         web_port: "{{web_port}}"
     - name: Persist Variable
       set_fact:
-        web_port: "{{redis_port}}"
+        redis_port: "{{redis_port}}"
     - name: Check operating system
       shell: uname
       ignore_errors: yes
