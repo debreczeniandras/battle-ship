@@ -1,19 +1,5 @@
 # Documentation
 
-## Tools, libraries, components, features used for this project
-
-* Symfony 5.1
-* FosRestBundle 3.0
-* Symfony ParamConverter (FrameWorkExtraBundle)
-* Symfony Workflow Component
-* Symfony Serializer Component
-* Symfony Forms Component
-* NelmioApiDocBundle  3.6
-* redis for persistance
-* Postman
-* docker-compose
-* ansible
-
 ## Usage of the API
 
 ### Set up and prepare ships
@@ -55,7 +41,9 @@ PUT /battles/:battleId
        }
      ] 
 
-Computer Opponent is marked with type: 1, Regular user type: 0
+Computer Opponent is marked with type: 1, Regular user type: 0.
+
+Check the api doc for a complete list of model types and parameters.
 
 ### Shoot
 
@@ -74,10 +62,8 @@ Computer user only a post request
     }
 
 
-## Api Documentation
+### Status
 
-Accessible via the Nelmio Api Doc:
+GET /battles/:battleId
 
-{host}/api/doc 
-
-    
+Get the status of the battle. (Check if it's still running or it has been finished for example.)

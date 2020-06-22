@@ -1,78 +1,31 @@
-# Application Documentation
+# Battle Ship Test
 
-[Can be accessed here:](doc/DOCUMENTATION.md)
+## Tools, components used for this project
 
-
-# Bootstrap Application with ansible
-
-## Prerequisites
-
-Install the following requirements on your system:
-
-(This only needs to be done once.)
-
-* docker
+* Symfony 5.1
+* FosRestBundle 3.0
+* Symfony ParamConverter (FrameWorkExtraBundle)
+* Symfony Workflow Component
+* Symfony Serializer Component
+* Symfony Forms Component
+* Symfony Validation Component
+* NelmioApiDocBundle  3.6
+* redis for persistance
+* Postman
 * docker-compose
-* docker should run as a non-root user      
-* pip & ansible (see below)
+* ansible
 
-### Install pip & ansible
+## Documentation
 
-(This only needs to be done once.)
-
-Install these libraries first (linux): 
-    
-    sudo apt install python-dev python3-dev build-essential python
-
-Install pip and then ansible globally (mind the SUDO)
-
-    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-    sudo -H python get-pip.py
-    sudo -H pip install ansible
-    rm get-pip.py
+[Read the docs here](doc/DOCUMENTATION.md)
+[Check how to install here](doc/INSTALLATION.md)
+[Postman Collection here](doc/Battle_Ship_postman_collection.json)
 
 
-## Set up Ansible project requirements
+## Links
 
-(This only needs to be done once.)
+* [Nelmio Api Doc](http://localhost:60280/api/doc) for full documentation of the models and their types 
+* [Swagger json export](http://localhost:60280/api/doc.json) 
+* [Redis Explorer](http://localhost:60236) to access the persisted battles
 
-    pip install -r etc/ansible/requirements.txt --user
-
-## Execute the playbook
-
-    ansible-playbook -K setup.yml -v
-
-You'll be prompted for your root password - which is relevant for apache modules and config changes.
-
-Please select afterwards two available ports for the following services:
-
-* _port_web_ is to reach the docker webserver from outside
-* _port_redis_ is to reach the redis explorer from outside
- 
-
-Sensible defaults are already provided, which you may accept by clicking Enter.
- 
-## URLS
-
-| Url | Description |
-|---- | --- | 
-| http://api.battle.local | Frontend API |
-
-
-## Ansible on MAC
-
-The apache playbook is completely ignored on other systems than Linux.
-
-You need to manually configure the following:
- 
-* create a host entry `api.battle.local` in your hosts file, that should resolve to 127.0.0.1
-* to have the best experience, use a local webserver on the host machine to proxy all requests from host to the docker web service on the web port provided above.
-(i.e. api.battle.local --> localhost:62080) This helps avoiding using a port number in the urls.
-
-## EXECUTE COMPOSER COMMANDS
-
-Execute composer commands by simply prefixing them like this:
-    
-    docker-compose run --rm app composer {install|require|update}
-
-# 
+Please replace the port numbers in case you picked different values. 
