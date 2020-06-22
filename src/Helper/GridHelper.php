@@ -14,6 +14,11 @@ final class GridHelper
     const HORIZONTAL = 'horizontal';
     const LAYOUT = [self::HORIZONTAL, self::VERTICAL];
     
+    private function __construct()
+    {
+        // helper class, should not be instantiated
+    }
+    
     public static function getRandomGrid(Battle $battle)
     {
         $width  = $battle->getOptions()->getWidth();
@@ -45,7 +50,7 @@ final class GridHelper
                 }
                 
                 $start = (new Coordinate())->setX($x)->setY(chr(64 + $y));
-                $end   = \App\Config\Ship::getEnd($start, $layout, $ship->getId());
+                $end   = ShipHelper::calcEnd($start, $layout, $ship->getId());
                 
                 $ship->setStart($start);
                 $ship->setEnd($end);

@@ -9,7 +9,7 @@ use App\Entity\Shot;
 use App\Form\Type\BattleType;
 use App\Form\Type\GameOptionsType;
 use App\Form\Type\ShotType;
-use App\Helper\BattleWorkflowHelper;
+use App\Service\BattleWorkflowService;
 use App\Manager\BattleManager;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
@@ -30,10 +30,10 @@ class BattleController extends AbstractFOSRestController
     /**
      * Set up and prepare for ships.
      *
-     * @param GameOptions          $options
-     * @param Request              $request
-     * @param BattleWorkflowHelper $workflow
-     * @param BattleManager        $manager
+     * @param GameOptions           $options
+     * @param Request               $request
+     * @param BattleWorkflowService $workflow
+     * @param BattleManager         $manager
      *
      * @return FormInterface|Response
      *
@@ -63,7 +63,7 @@ class BattleController extends AbstractFOSRestController
     public function setOptions(
         GameOptions $options,
         Request $request,
-        BattleWorkflowHelper $workflow,
+        BattleWorkflowService $workflow,
         BattleManager $manager
     ): Response {
         $form = $this->createForm(GameOptionsType::class, $options);
@@ -117,10 +117,10 @@ class BattleController extends AbstractFOSRestController
     /**
      * Set up players for this Battle.
      *
-     * @param Battle               $battle
-     * @param Request              $request
-     * @param BattleWorkflowHelper $workflow
-     * @param BattleManager        $manager
+     * @param Battle                $battle
+     * @param Request               $request
+     * @param BattleWorkflowService $workflow
+     * @param BattleManager         $manager
      *
      * @return FormInterface|Response
      *
@@ -152,7 +152,7 @@ class BattleController extends AbstractFOSRestController
     public function setShips(
         Battle $battle,
         Request $request,
-        BattleWorkflowHelper $workflow,
+        BattleWorkflowService $workflow,
         BattleManager $manager
     ): Response {
         $form = $this->createForm(BattleType::class, $battle);

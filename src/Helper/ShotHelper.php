@@ -8,6 +8,11 @@ use App\Entity\Shot;
 
 final class ShotHelper
 {
+    private function __construct()
+    {
+        // helper class, should not be instantiated
+    }
+    
     public static function getBestShot(Battle $battle, Player $player)
     {
         // no shots have yet been fired, get random
@@ -31,7 +36,7 @@ final class ShotHelper
             return static::getRandomShot($battle, $player);
         }
         
-        // if last was only a hit but not sunk, we should get a closer hit
+        // if last shot was only a hit but not sunk, we should get a closer hit
         if ($lastShot->isHit()) {
             return static::getCloserShot($battle, $player, $lastShot);
         }
@@ -110,9 +115,9 @@ final class ShotHelper
             }
         }
         
-        // @todo here I was supposed to start shooting from the other side
+        // @todo here we may need to start shooting from the other side
         
-        // if we are unable to find a shot from the surrounding coordinates that habe not yet been fired return a random shot
+        // if we are unable to find a shot from the surrounding coordinates that have not yet been fired return a random shot
         return static::getRandomShot($battle, $player);
     }
     

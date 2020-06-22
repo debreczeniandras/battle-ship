@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Helper;
+namespace App\Service;
 
 use Symfony\Component\Workflow\Registry;
 
-class BattleWorkflowHelper
+class BattleWorkflowService
 {
-    /** @var Registry */
     private Registry $workflows;
     
     public function __construct(Registry $workflows)
