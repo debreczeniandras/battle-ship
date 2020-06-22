@@ -1,6 +1,7 @@
 {
+    "name": "andras/battle-ship",
     "type": "project",
-    "license": "proprietary",
+    "license": "MIT",
     "require": {
         "php": "^7.4",
         "ext-ctype": "*",
