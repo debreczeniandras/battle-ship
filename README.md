@@ -25,14 +25,15 @@
 
 ## Links
 
-* [Nelmio Api Doc](http://localhost:60280/api/doc) for full documentation of the models and their types 
+* [Nelmio Api Doc](http://localhost:60280/api/doc) for full documentation of the models and parameter types 
 * [Swagger json export](http://localhost:60280/api/doc.json) 
-* [Redis Explorer](http://localhost:60236) to access the persisted battles
+* [Redis Explorer](http://localhost:60236) to access the persisted battles in redis
 
-Please replace the port numbers in case you picked different values. 
+(Please replace the port numbers in case you picked different values.) 
 
 ## Tests
 
 Run the test suite with (docker-compose) phpunit:
 
     docker-compose run app bin/phpunit --testdox
+
