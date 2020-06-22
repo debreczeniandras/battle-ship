@@ -3,9 +3,7 @@
 namespace App\Form\Type;
 
 use App\Entity\Battle;
-use App\Entity\Player;
 use App\Entity\Shot;
-use App\Helper\GridHelper;
 use App\Helper\ShotHelper;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\AbstractType;
@@ -18,14 +16,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ShotType extends AbstractType implements EventSubscriberInterface
 {
-    /** @var GridHelper */
-    private GridHelper $gridHelper;
-    
-    public function __construct(GridHelper $gridHelper)
-    {
-        $this->gridHelper = $gridHelper;
-    }
-    
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('x', IntegerType::class);

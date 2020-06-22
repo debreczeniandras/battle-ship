@@ -99,6 +99,9 @@
     "symfony/asset": {
         "version": "v5.1.2"
     },
+    "symfony/browser-kit": {
+        "version": "v5.1.2"
+    },
     "symfony/cache": {
         "version": "v5.1.2"
     },
@@ -125,6 +128,9 @@
     },
     "symfony/deprecation-contracts": {
         "version": "v2.1.2"
+    },
+    "symfony/dom-crawler": {
+        "version": "v5.1.2"
     },
     "symfony/dotenv": {
         "version": "v5.1.2"

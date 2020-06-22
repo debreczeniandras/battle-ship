@@ -5,6 +5,7 @@
         "php": "^7.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-json": "*",
         "doctrine/collections": "^1.6",
         "friendsofsymfony/rest-bundle": "^3.0",
         "nelmio/api-doc-bundle": "^3.6",
@@ -21,6 +22,7 @@
         "symfony/yaml": "5.1.*"
     },
     "require-dev": {
+        "symfony/browser-kit": "5.1.*",
         "symfony/phpunit-bridge": "^5.1"
     },
     "config": {
