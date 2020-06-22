@@ -2,6 +2,7 @@
 
 ## Tools, components used for this project
 
+* PHP 7.4
 * Symfony 5.1
 * FosRestBundle 3.0
 * PhpUnit 7.5
