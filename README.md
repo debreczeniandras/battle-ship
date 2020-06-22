@@ -1,4 +1,4 @@
-# Battle Ship Test
+# Battle Ship API
 
 ## Tools, components used for this project
 
