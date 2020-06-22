@@ -5,7 +5,7 @@ namespace App\Manager;
 use App\Entity\Battle;
 use App\Entity\Player;
 use App\Entity\Shot;
-use App\Helper\BattleWorkflowHelper;
+use App\Service\BattleWorkflowService;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
@@ -17,9 +17,9 @@ class BattleManager
 {
     private ClientInterface      $redis;
     private SerializerInterface  $serializer;
-    private BattleWorkflowHelper $workflow;
+    private BattleWorkflowService $workflow;
     
-    public function __construct(ClientInterface $redis, SerializerInterface $serializer, BattleWorkflowHelper $workflow)
+    public function __construct(ClientInterface $redis, SerializerInterface $serializer, BattleWorkflowService $workflow)
     {
         $this->redis      = $redis;
         $this->serializer = $serializer;

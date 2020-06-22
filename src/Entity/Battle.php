@@ -161,10 +161,24 @@ class Battle
         return $this->id;
     }
     
-    public function getPlayer($id) : Player
+    public function getPlayer($id): Player
     {
-        return $this->getPlayers()->filter(function(Player $player) use ($id){
+        return $this->getPlayers()->filter(function (Player $player) use ($id) {
             return $player->getId() === $id;
+        })->first();
+    }
+    
+    /**
+     * @param Player $player
+     *
+     * @return Player
+     *
+     * @SWG\Parameter(type=Player::class)
+     */
+    public function getOpponent(Player $player): Player
+    {
+        return $this->getPlayers()->filter(function (Player $item) use ($player) {
+            return $item->getId() !== $player->getId();
         })->first();
     }
     
@@ -178,6 +192,36 @@ class Battle
     }
     
     /**
+     * Checks if the ship coordinates are within the range of the board.
+     * We have to check it here, since we only know the size of the board here.
+     *
+     * @param Ship $ship
+     *
+     * @return bool
+     */
+    public function isShipOffTheBoard(Ship $ship): bool
+    {
+        $width  = $this->getOptions()->getWidth();
+        $height = $this->getOptions()->getHeight();
+        
+        switch (true) {
+            case $ship->getStart()->getX() < 1:
+            case $ship->getStart()->getYAscii() < 1:
+            case $ship->getStart()->getX() > $width:
+            case $ship->getEnd()->getX() > $width:
+            case $ship->getStart()->getYAscii() > $height:
+            case $ship->getEnd()->getYAscii() > $height:
+                return true;
+            
+            default:
+                return false;
+        }
+    }
+    
+    /**
+     * Most of the validation needs to happen here, because they may depend on configurations defined in the battle.
+     * We may not have access to the battle from within the grid of a user, that's why we validate it here.
+     *
      * @param ExecutionContextInterface $context
      * @param                           $payload
      *
@@ -186,9 +230,6 @@ class Battle
     public function validate(ExecutionContextInterface $context, $payload)
     {
         $playerIds = [];
-        
-        $width  = $this->getOptions()->getWidth();
-        $height = $this->getOptions()->getHeight();
         
         $i = 0;
         foreach ($this->players as $player) {
@@ -209,17 +250,10 @@ class Battle
                 $shipIds = [];
                 // check ships
                 foreach ($grid->getShips() ?? [] as $ship) {
-                    
-                    // if the provided coordinates are within the range of the board
-                    // the minimum value of X "1" is already checked in the Entity (Greaterorequal constraint)
-                    switch (true) {
-                        case $ship->getStart()->getX() > $width:
-                        case $ship->getEnd()->getX() > $width:
-                        case $ship->getStart()->getYAscii() > $height:
-                        case $ship->getEnd()->getYAscii() > $height:
-                            $context->buildViolation(sprintf('This ship is off the board.'))
-                                    ->atPath("players[$i].grid.ships[$j].id")
-                                    ->addViolation();
+                    if ($this->isShipOffTheBoard($ship)) {
+                        $context->buildViolation(sprintf('This ship is off the board.'))
+                                ->atPath("players[$i].grid.ships[$j].id")
+                                ->addViolation();
                     }
                     
                     // check if ships are unique
@@ -250,19 +284,5 @@ class Battle
             $i++;
             $playerIds[] = $player->getId();
         }
-    }
-    
-    /**
-     * @param Player $player
-     *
-     * @return Player
-     *
-     * @SWG\Parameter(type=Player::class)
-     */
-    public function getOpponent(Player $player) : Player
-    {
-        return $this->getPlayers()->filter(function(Player $item) use ($player) {
-            return $item->getId() !== $player->getId();
-        })->first();
     }
 }

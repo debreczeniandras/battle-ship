@@ -5,6 +5,7 @@ namespace App\Entity;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class Ship
 {
@@ -108,6 +109,16 @@ class Ship
     }
     
     /**
+     * A ship is diagonal, if either start.x and start.y OR end.y end.y are not the same
+     *
+     * @return bool
+     */
+    public function isShipDiagonal(): bool
+    {
+        return !($this->start->getX() === $this->end->getX() || $this->start->getY() === $this->end->getY());
+    }
+    
+    /**
      * @return string[]
      *
      * @SWG\Items(type="string")
@@ -118,7 +129,7 @@ class Ship
         
         for ($i = $this->start->getX(); $i <= $this->end->getX(); $i++) {
             // convert string to ASCII value int
-            for ($j = ord($this->start->getY()) - 64; $j <= ord($this->end->getY()) - 64; $j++) {
+            for ($j = $this->start->getYAscii(); $j <= $this->end->getYAscii(); $j++) {
                 $coords[] = (string)$i . chr(64 + $j);
             }
         }
@@ -134,5 +145,22 @@ class Ship
     public function getLength(): int
     {
         return ($this->end->getX() - $this->start->getX()) + ($this->end->getYAscii() - $this->start->getYAscii() + 1);
+    }
+    
+    /**
+     * Most of the validation needs to happen here, because they may depend on configurations defined in the battle.
+     * We may not have access to the battle from within the grid of a user, that's why we validate it here.
+     *
+     * @param ExecutionContextInterface $context
+     * @param                           $payload
+     *
+     * @Assert\Callback()
+     */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        if ($this->isShipDiagonal()) {
+            $context->buildViolation('The ship is supposed to be either vertical or horizontal.')
+                    ->addViolation();
+        }
     }
 }

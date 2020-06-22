@@ -34,14 +34,18 @@ class Grid
         $this->shots = new ArrayCollection();
     }
     
-    public function addShip(Ship $ship)
+    public function addShip(Ship $ship): Grid
     {
         $this->ships->add($ship);
+        
+        return $this;
     }
     
-    public function addShot(Shot $shot)
+    public function addShot(Shot $shot): Grid
     {
         $this->shots->add($shot);
+        
+        return $this;
     }
     
     /**
