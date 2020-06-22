@@ -10,16 +10,16 @@
 * Symfony Forms Component
 * Symfony Validation Component
 * NelmioApiDocBundle  3.6
-* redis for persistance
+* redis for persistence
 * Postman
 * docker-compose
 * ansible
 
 ## Documentation
 
-[Read the docs here](doc/DOCUMENTATION.md)
-[Check how to install here](doc/INSTALLATION.md)
-[Postman Collection here](doc/Battle_Ship_postman_collection.json)
+* [Read the docs here](doc/DOCUMENTATION.md)
+* [Check how to install here](doc/INSTALLATION.md)
+* [Postman Collection here](doc/Battle_Ship_postman_collection.json)
 
 
 ## Links
