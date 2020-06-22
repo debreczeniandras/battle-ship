@@ -2,6 +2,8 @@
 
 ## Usage of the API
 
+A [Postman Collection](Battle_Ship_postman_collection.json) is available which showcases the workflow described below.
+
 ### Set up and prepare ships
 
 POST /battles
@@ -10,6 +12,8 @@ POST /battles
         "width": 8,
         "height": 8
     }
+
+Check model properties and validation constraints in the [Api Doc](/api/doc). 
 
 ### Set up players
 
@@ -45,6 +49,8 @@ Computer Opponent is marked with type: 1, Regular user type: 0.
 
 Check the api doc for a complete list of model types and parameters.
 
+(This config theoretically also allows two regular players to play against each other.)
+
 ### Shoot
 
 POST /battles/:battleId/players/:playerId/shots
@@ -60,6 +66,8 @@ Computer type of player need only a post request with "empty" body.
 
     {
     }
+    
+This way a calculated shot will be fired and the same response will be delivered.
 
 ### Status
 
