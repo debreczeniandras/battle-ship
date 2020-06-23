@@ -10,14 +10,14 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 class BattleControllerTest extends WebTestCase
 {
     /**
-     * @testdox      If set options method returns a correct battle object
+     * @testdox      Set options method returns a correct battle object
      * @return string|null
      */
     public function testSetOptions(): string
     {
         $client = static::createClient();
         $client->request('POST', '/api/v1/battles', [], [], ['CONTENT_TYPE' => 'application/json'],
-                         '{"width": 10, "height": 10}');
+                         '{"width": 8, "height": 8}');
         
         $response = $client->getResponse();
         
@@ -28,8 +28,8 @@ class BattleControllerTest extends WebTestCase
         $this->assertArrayHasKey('id', $data);
         $this->assertNotEmpty($data['id']);
         $this->assertArrayHasKey('options', $data);
-        $this->assertEquals(10, $data['options']['width']);
-        $this->assertEquals(10, $data['options']['height']);
+        $this->assertEquals(8, $data['options']['width']);
+        $this->assertEquals(8, $data['options']['height']);
         $this->assertArrayHasKey('state', $data);
         $this->assertEquals('ready', $data['state']);
         
@@ -38,7 +38,7 @@ class BattleControllerTest extends WebTestCase
     
     /**
      * @depends testSetOptions
-     * @testdox Test if a Battle object is returned.
+     * @testdox Battle object is returned.
      *
      * @param $url
      *
@@ -63,7 +63,7 @@ class BattleControllerTest extends WebTestCase
     /**
      * @dataProvider provideTestPlayerConfig
      * @depends      testGetBattle
-     * @testdox      Player with grid layout set up correctly
+     * @testdox      Setting grid layout returns correct responses
      *
      * @param array $payload
      * @param int   $expStatus
@@ -83,7 +83,7 @@ class BattleControllerTest extends WebTestCase
     
     /**
      * @depends testGetBattle
-     * @testdox Battle is properly deleted.
+     * @testdox Battle is deleted.
      *
      * @param $url
      */
@@ -99,7 +99,7 @@ class BattleControllerTest extends WebTestCase
     public function provideTestPlayerConfig()
     {
         return [
-            'one ship is missing' => [
+            'one ship is missing - returns 400' => [
                 [
                     [
                         'id' => 'A',
@@ -111,7 +111,6 @@ class BattleControllerTest extends WebTestCase
                                 ['id' => 'submarine', 'start' => ['x' => 4, 'y' => 'G'], 'end' => ['x' => 6, 'y' => 'G']],
                                 ['id' => 'destroyer', 'start' => ['x' => 8, 'y' => 'E'], 'end' => ['x' => 8, 'y' => 'F']],
                             ],
-                        
                         ],
                     ],
                     [
@@ -121,9 +120,179 @@ class BattleControllerTest extends WebTestCase
                 ],
                 400,
                 false,
-                'This collection should contain exactly'
+                'This collection should contain exactly',
             ],
-            'correct layout' => [
+            'one ship is added twice - returns 400' => [
+                [
+                    [
+                        'id' => 'A',
+                        'type' => 0,
+                        'grid' => [
+                            'ships' => [
+                                ['id' => 'carrier', 'start' => ['x' => 2, 'y' => 'A'], 'end' => ['x' => 2, 'y' => 'E']],
+                                ['id' => 'carrier', 'start' => ['x' => 2, 'y' => 'A'], 'end' => ['x' => 2, 'y' => 'E']],
+                                ['id' => 'cruiser', 'start' => ['x' => 4, 'y' => 'C'], 'end' => ['x' => 6, 'y' => 'C']],
+                                ['id' => 'submarine', 'start' => ['x' => 4, 'y' => 'G'], 'end' => ['x' => 6, 'y' => 'G']],
+                                ['id' => 'destroyer', 'start' => ['x' => 8, 'y' => 'E'], 'end' => ['x' => 8, 'y' => 'F']],
+                            ],
+                        ],
+                    ],
+                    [
+                        'id' => 'B',
+                        'type' => 1,
+                    ],
+                ],
+                400,
+                false,
+                'This ship is already added to the board',
+            ],
+            'ship with id carrier has wrong size (6 instead of 5) - returns 400' => [
+                [
+                    [
+                        'id' => 'A',
+                        'type' => 0,
+                        'grid' => [
+                            'ships' => [
+                                ['id' => 'carrier', 'start' => ['x' => 2, 'y' => 'A'], 'end' => ['x' => 2, 'y' => 'F']],
+                                ['id' => 'battleship', 'start' => ['x' => 3, 'y' => 'D'], 'end' => ['x' => 6, 'y' => 'D']],
+                                ['id' => 'cruiser', 'start' => ['x' => 4, 'y' => 'C'], 'end' => ['x' => 6, 'y' => 'C']],
+                                ['id' => 'submarine', 'start' => ['x' => 4, 'y' => 'G'], 'end' => ['x' => 6, 'y' => 'G']],
+                                ['id' => 'destroyer', 'start' => ['x' => 8, 'y' => 'E'], 'end' => ['x' => 8, 'y' => 'F']],
+                            ],
+                        ],
+                    ],
+                    [
+                        'id' => 'B',
+                        'type' => 1,
+                    ],
+                ],
+                400,
+                false,
+                'ship is supposed to be 5 long',
+            ],
+            'a ship is neither vertical nor horizontal - returns 400' => [
+                [
+                    [
+                        'id' => 'A',
+                        'type' => 0,
+                        'grid' => [
+                            'ships' => [
+                                ['id' => 'carrier', 'start' => ['x' => 2, 'y' => 'A'], 'end' => ['x' => 3, 'y' => 'C']],
+                                ['id' => 'battleship', 'start' => ['x' => 3, 'y' => 'D'], 'end' => ['x' => 6, 'y' => 'D']],
+                                ['id' => 'cruiser', 'start' => ['x' => 4, 'y' => 'C'], 'end' => ['x' => 6, 'y' => 'C']],
+                                ['id' => 'submarine', 'start' => ['x' => 4, 'y' => 'G'], 'end' => ['x' => 6, 'y' => 'G']],
+                                ['id' => 'destroyer', 'start' => ['x' => 8, 'y' => 'E'], 'end' => ['x' => 8, 'y' => 'F']],
+                            ],
+                        ],
+                    ],
+                    [
+                        'id' => 'B',
+                        'type' => 1,
+                    ],
+                ],
+                400,
+                false,
+                'The ship is supposed to be either vertical or horizontal',
+            ],
+            'a ship crosses another ship - returns 400' => [
+                [
+                    [
+                        'id' => 'A',
+                        'type' => 0,
+                        'grid' => [
+                            'ships' => [
+                                ['id' => 'carrier', 'start' => ['x' => 2, 'y' => 'A'], 'end' => ['x' => 2, 'y' => 'E']],
+                                ['id' => 'battleship', 'start' => ['x' => 2, 'y' => 'D'], 'end' => ['x' => 5, 'y' => 'D']],
+                                ['id' => 'cruiser', 'start' => ['x' => 4, 'y' => 'C'], 'end' => ['x' => 6, 'y' => 'C']],
+                                ['id' => 'submarine', 'start' => ['x' => 4, 'y' => 'G'], 'end' => ['x' => 6, 'y' => 'G']],
+                                ['id' => 'destroyer', 'start' => ['x' => 8, 'y' => 'E'], 'end' => ['x' => 8, 'y' => 'F']],
+                            ],
+                        ],
+                    ],
+                    [
+                        'id' => 'B',
+                        'type' => 1,
+                    ],
+                ],
+                400,
+                false,
+                'ship is overlapping on the board',
+            ],
+            'one ship is off the board - returns 400' => [
+                [
+                    [
+                        'id' => 'A',
+                        'type' => 0,
+                        'grid' => [
+                            'ships' => [
+                                ['id' => 'carrier', 'start' => ['x' => 2, 'y' => 'A'], 'end' => ['x' => 2, 'y' => 'E']],
+                                ['id' => 'battleship', 'start' => ['x' => 3, 'y' => 'D'], 'end' => ['x' => 6, 'y' => 'D']],
+                                ['id' => 'cruiser', 'start' => ['x' => 4, 'y' => 'C'], 'end' => ['x' => 6, 'y' => 'C']],
+                                ['id' => 'submarine', 'start' => ['x' => 7, 'y' => 'G'], 'end' => ['x' => 9, 'y' => 'G']],
+                                ['id' => 'destroyer', 'start' => ['x' => 8, 'y' => 'E'], 'end' => ['x' => 8, 'y' => 'F']],
+                            ],
+                        ],
+                    ],
+                    [
+                        'id' => 'B',
+                        'type' => 1,
+                    ],
+                ],
+                400,
+                false,
+                'This ship is off the board',
+            ],
+            'non-unique players - returns 400' => [
+                [
+                    [
+                        'id' => 'A',
+                        'type' => 0,
+                    ],
+                    [
+                        'id' => 'A',
+                        'type' => 1,
+                    ],
+                ],
+                400,
+                false,
+                'person \"A\" already exists',
+            ],
+            'wrong player type - returns 400' => [
+                [
+                    [
+                        'id' => 'A',
+                        'type' => 0,
+                        'grid' => [
+                            'ships' => [
+                                ['id' => 'carrier', 'start' => ['x' => 2, 'y' => 'A'], 'end' => ['x' => 2, 'y' => 'E']],
+                                ['id' => 'battleship', 'start' => ['x' => 3, 'y' => 'D'], 'end' => ['x' => 6, 'y' => 'D']],
+                                ['id' => 'cruiser', 'start' => ['x' => 4, 'y' => 'C'], 'end' => ['x' => 6, 'y' => 'C']],
+                                ['id' => 'submarine', 'start' => ['x' => 4, 'y' => 'G'], 'end' => ['x' => 6, 'y' => 'G']],
+                                ['id' => 'destroyer', 'start' => ['x' => 8, 'y' => 'E'], 'end' => ['x' => 8, 'y' => 'F']],
+                            ],
+                        ],
+                    ],
+                    [
+                        'id' => 'B',
+                        'type' => 2,
+                    ],
+                ],
+                400,
+                false,
+                'This value is not valid',
+            ],
+            'one player missing - returns 400' => [
+                [
+                    [
+                        'id' => 'A',
+                        'type' => 1,
+                    ],
+                ],
+                400,
+                false,
+                'This collection should contain exactly 2 elements.',
+            ],
+            'correct layout - returns 204' => [
                 [
                     [
                         'id' => 'A',
@@ -145,9 +314,9 @@ class BattleControllerTest extends WebTestCase
                 ],
                 204,
                 true,
-                ''
+                '',
             ],
-            'second attempt should no longer be allowed' => [
+            'second attempt to set up the board should no longer be allowed - return 400' => [
                 [
                     [
                         'id' => 'A',
@@ -169,7 +338,7 @@ class BattleControllerTest extends WebTestCase
                 ],
                 400,
                 false,
-                'is not allowed at this state'
+                'is not allowed at this state',
             ],
         ];
     }
