@@ -20,8 +20,10 @@ class HitSeries implements \Countable
     
     public function addHit(Shot $shot): HitSeries
     {
-        if ($this->belongsToSeries($shot)) {
-            $this->hits[] = $shot;
+        if (!$this->exists($shot)) {
+            if ($this->belongsToSeries($shot)) {
+                $this->hits[] = $shot;
+            }
         }
         
         return $this;
@@ -29,7 +31,9 @@ class HitSeries implements \Countable
     
     public function setHits(array $hits): HitSeries
     {
-        $this->hits = $hits;
+        foreach ($hits as $hit) {
+            $this->addHit($hit);
+        }
         
         return $this;
     }
@@ -53,14 +57,26 @@ class HitSeries implements \Countable
     public function belongsToSeries(Shot $shot): bool
     {
         switch (true) {
-            case $this->count() < 2:
-                return true;
             case $this->isHorizontal():
                 return $this->hits[0]->getY() === $shot->getY();
-            
             case $this->isVertical():
                 return $this->hits[0]->getX() === $shot->getX();
+            default:
+                return true;
         }
+    }
+    
+    public function exists(Shot $shot)
+    {
+        $exists = false;
+        foreach ($this->hits as $hit) {
+            if ($hit->getY() === $shot->getY() && $hit->getX() === $shot->getX()) {
+                $exists = true;
+                break;
+            }
+        }
+        
+        return $exists;
     }
     
     public function isHorizontal(): bool

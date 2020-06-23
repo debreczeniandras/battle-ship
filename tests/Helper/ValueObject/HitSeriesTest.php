@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 class HitSeriesTest extends TestCase
 {
     /**
-     * @dataProvider provideHitSeries
+     * @dataProvider provideHitSeriesForOrientation
      * @testdox      If Orientation is correctly reported
      *
      * @param array $hits
@@ -22,12 +22,12 @@ class HitSeriesTest extends TestCase
     public function testOrientation(array $hits, bool $expIsHorizontal, bool $expIsVertical)
     {
         $hitSeries = (new HitSeries(8, 8))->setHits($hits);
-        
+
         $this->assertSame($expIsHorizontal, $hitSeries->isHorizontal());
         $this->assertSame($expIsVertical, $hitSeries->isVertical());
     }
-    
-    public function provideHitSeries()
+
+    public function provideHitSeriesForOrientation()
     {
         return [
             'vertical' => [
@@ -59,6 +59,57 @@ class HitSeriesTest extends TestCase
                 ],
                 false,
                 false,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provideHitSeriesForBelong
+     * @testdox      If only hits are added to the series, that really belong
+     *
+     * @param Shot[] $hits
+     * @param int    $expCount
+     */
+    public function testBelongsToSeries(array $hits, int $expCount)
+    {
+        $hitSeries = (new HitSeries(8, 8))->setHits($hits);
+        
+        $this->assertCount($expCount, $hitSeries);
+    }
+    
+    public function provideHitSeriesForBelong()
+    {
+        return [
+            'correct linear' => [
+                [
+                    (new Shot())->setX(2)->setY('A'),
+                    (new Shot())->setX(2)->setY('B'),
+                ],
+                2,
+            ],
+            'with a duplicate' => [
+                [
+                    (new Shot())->setX(2)->setY('A'),
+                    (new Shot())->setX(2)->setY('B'),
+                    (new Shot())->setX(2)->setY('B'),
+                ],
+                2,
+            ],
+            'with several duplicates' => [
+                [
+                    (new Shot())->setX(2)->setY('A'),
+                    (new Shot())->setX(2)->setY('A'),
+                    (new Shot())->setX(2)->setY('B'),
+                    (new Shot())->setX(2)->setY('B'),
+                    (new Shot())->setX(2)->setY('C'),
+                    (new Shot())->setX(2)->setY('C'),
+                ],
+                3,
+            ],
+            'empty set' => [
+                [
+                ],
+                0,
             ],
         ];
     }
