@@ -68,6 +68,24 @@ class ShotHelperTest extends TestCase
                 8,
                 (new HitSeries(8, 8)),
             ],
+            'with shots belonging to different ships (only last ships` hits series expected)' => [
+                [
+                    (new Shot())->setX(2)->setY('A'),
+                    (new Shot())->setX(2)->setY('B'),
+                    (new Shot())->setX(3)->setY('B')->setHit(true),
+                    (new Shot())->setX(3)->setY('C')->setHit(true),
+                    (new Shot())->setX(3)->setY('D')->setHit(true),
+                    (new Shot())->setX(3)->setY('A'),
+                    (new Shot())->setX(2)->setY('D')->setHit(true),
+                    (new Shot())->setX(3)->setY('D')->setHit(true),
+                    (new Shot())->setX(4)->setY('D')->setHit(true),
+                ],
+                8,
+                8,
+                (new HitSeries(8, 8))->addHit((new Shot())->setX(4)->setY('D')->setHit(true))
+                                     ->addHit((new Shot())->setX(3)->setY('D')->setHit(true))
+                                     ->addHit((new Shot())->setX(2)->setY('D')->setHit(true)),
+            ],
             'with no shots yet fired' => [
                 [
                 ],
