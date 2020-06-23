@@ -5,6 +5,7 @@ namespace App\Helper;
 use App\Entity\Battle;
 use App\Entity\Player;
 use App\Entity\Shot;
+use App\Helper\ValueObject\HitSeries;
 
 final class ShotHelper
 {
@@ -15,41 +16,36 @@ final class ShotHelper
     
     public static function getBestShot(Battle $battle, Player $player)
     {
-        // no shots have yet been fired, get random
-        if (!$player->getGrid()->getShots()->count()) {
+        $lastHitSeries = static::getHitSeries($battle, $player);
+        if (!$lastHitSeries->count()) {
             return static::getRandomShot($battle, $player);
         }
         
-        $allHits = $player->getGrid()->getShots()->filter(function (Shot $shot) {
-            return $shot->isHit();
-        });
+        $nextShot = $lastHitSeries->getNextShot();
         
-        // no hits yet at all - get random
-        if (!$allHits->count()) {
-            return static::getRandomShot($battle, $player);
-        }
-        
-        /** @var Shot $lastShot */
-        $lastShot = $player->getGrid()->getShots()->last();
-        // last shot was sunk, we are finished with this ship
-        if ($lastShot->isSunk()) {
-            return static::getRandomShot($battle, $player);
-        }
-        
-        // if last shot was only a hit but not sunk, we should get a closer hit
-        if ($lastShot->isHit()) {
-            return static::getCloserShot($battle, $player, $lastShot);
-        }
-        
-        /** @var Shot $lastHit */
-        $lastHit = $allHits->last();
-        // if the last hit was not sunk, we better get a closer shot
-        if (!$lastHit->isSunk()) {
-            return static::getCloserShot($battle, $player, $lastHit);
-        }
-        
-        // the last hit was sunk, we have to look elsewhere
         return static::getRandomShot($battle, $player);
+    }
+    
+    private static function getHitSeries(Battle $battle, Player $player): HitSeries
+    {
+        $playerShots   = $player->getGrid()->getShots()->toArray();
+        $lastHitSeries = new HitSeries($battle->getOptions()->getWidth(), $battle->getOptions()->getHeight());
+        
+        $item = end($playerShots);
+        do {
+            // no shots were yet fired
+            if (!$item) {
+                break;
+            }
+            
+            if ($item->isHit()) {
+                $lastHitSeries->addHit($item);
+            }
+            
+            $item = prev($playerShots);
+        } while ($item && !$item->isSunk());
+        
+        return $lastHitSeries;
     }
     
     private static function getRandomShot(Battle $battle, Player $player)
@@ -106,12 +102,12 @@ final class ShotHelper
                 return $surrCoord['left'];
             }
         }
-    
+        
         // if we were unable to get a tactical coordinate, return one of the surrounding ones
         shuffle($surrCoord);
         foreach ($surrCoord as $coord) {
             if (!$player->getGrid()->hasShot($coord)) {
-               return $coord;
+                return $coord;
             }
         }
         
@@ -125,29 +121,29 @@ final class ShotHelper
     {
         $width  = $battle->getOptions()->getWidth();
         $height = $battle->getOptions()->getHeight();
-    
+        
         $surrCoord = [];
         
         // get next coordinate left to the last
         if ($lastShot->getX() !== 1) {
             $surrCoord['left'] = (clone $lastShot)->setX($lastShot->getX() - 1);
         }
-    
+        
         // get next coordinate right to the last
         if ($lastShot->getX() < $height) {
             $surrCoord['right'] = (clone $lastShot)->setX($lastShot->getX() + 1);
         }
-    
+        
         // get next coordinate above
         if ($lastShot->getYAscii() !== 1) {
             $surrCoord['top'] = (clone $lastShot)->setYAscii($lastShot->getYAscii() - 1);
         }
-    
+        
         // get next coordinate to the bottom
         if ($lastShot->getYAscii() < $width) {
             $surrCoord['bottom'] = (clone $lastShot)->setYAscii($lastShot->getYAscii() + 1);
         }
-    
+        
         return $surrCoord;
     }
 }

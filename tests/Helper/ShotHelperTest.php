@@ -4,10 +4,16 @@ namespace App\Tests\Helper;
 
 use App\Entity\Battle;
 use App\Entity\GameOptions;
+use App\Entity\Grid;
+use App\Entity\Player;
 use App\Entity\Shot;
 use App\Helper\ShotHelper;
+use App\Helper\ValueObject\HitSeries;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @testdox Shot Helper Class
+ */
 class ShotHelperTest extends TestCase
 {
     /**
@@ -17,48 +23,70 @@ class ShotHelperTest extends TestCase
      * @param Shot[] $expSurrCoords
      *
      * @throws \ReflectionException
+     * @testdox      Last Hit Series are returned correctly
      */
-    public function testCorrectSurroundingCoordsAreReturned(Shot $lastShot, array $expSurrCoords)
+    public function testLastHitSeries(array $shots, $width, $height, HitSeries $expSeries)
     {
-        $battle = (new Battle())->setOptions((new GameOptions())->setWidth(8)->setHeight(8));
+        $battle = (new Battle())->setOptions((new GameOptions())->setWidth($width)->setHeight($height));
+        $player = (new Player())->setGrid((new Grid())->setShots($shots));
         
         $reflection = new \ReflectionClass(ShotHelper::class);
-        $method     = $reflection->getMethod('getSurroundingCoordinates');
+        $method     = $reflection->getMethod('getHitSeries');
         $method->setAccessible(true);
         
-        $this->assertEquals($expSurrCoords, $method->invokeArgs(null, [$battle, $lastShot]));
+        $this->assertEquals($expSeries, $method->invokeArgs(null, [$battle, $player]));
     }
     
     public function provideShots()
     {
         return [
-            [(new Shot())->setX(5)->setY('C'),
-             [
-                 'left' => (new Shot())->setX(4)->setY('C'),
-                 'right' => (new Shot())->setX(6)->setY('C'),
-                 'top' => (new Shot())->setX(5)->setY('B'),
-                 'bottom' => (new Shot())->setX(5)->setY('D'),
-             ],
+            'with an unfinished ship' => [
+                [
+                    (new Shot())->setX(2)->setY('A'),
+                    (new Shot())->setX(2)->setY('B'),
+                    (new Shot())->setX(3)->setY('B')->setHit(true),
+                    (new Shot())->setX(3)->setY('C')->setHit(true),
+                    (new Shot())->setX(3)->setY('D')->setHit(true),
+                    (new Shot())->setX(3)->setY('A'),
+                ],
+                8,
+                8,
+                (new HitSeries(8, 8))->addHit((new Shot())->setX(3)->setY('D')->setHit(true))
+                                     ->addHit((new Shot())->setX(3)->setY('C')->setHit(true))
+                                     ->addHit((new Shot())->setX(3)->setY('B')->setHit(true)),
             ],
-            [(new Shot())->setX(4)->setY('E'),
-             [
-                 'left' => (new Shot())->setX(3)->setY('E'),
-                 'right' => (new Shot())->setX(5)->setY('E'),
-                 'top' => (new Shot())->setX(4)->setY('D'),
-                 'bottom' => (new Shot())->setX(4)->setY('F'),
-             ],
+            'with an already sunk ship' => [
+                [
+                    (new Shot())->setX(2)->setY('A'),
+                    (new Shot())->setX(2)->setY('B'),
+                    (new Shot())->setX(3)->setY('B')->setHit(true),
+                    (new Shot())->setX(3)->setY('C')->setHit(true),
+                    (new Shot())->setX(3)->setY('D')->setHit(true)->setSunk(true),
+                    (new Shot())->setX(3)->setY('A'),
+                ],
+                8,
+                8,
+                (new HitSeries(8, 8)),
             ],
-            [(new Shot())->setX(1)->setY('A'),
-             [
-                 'right' => (new Shot())->setX(2)->setY('A'),
-                 'bottom' => (new Shot())->setX(1)->setY('B'),
-             ],
+            'with no shots yet fired' => [
+                [
+                ],
+                8,
+                8,
+                (new HitSeries(8, 8)),
             ],
-            [(new Shot())->setX(8)->setY('H'),
-             [
-                 'left' => (new Shot())->setX(7)->setY('H'),
-                 'top' => (new Shot())->setX(8)->setY('G'),
-             ],
+            'with only missing shots' => [
+                [
+                    (new Shot())->setX(2)->setY('A'),
+                    (new Shot())->setX(2)->setY('B'),
+                    (new Shot())->setX(3)->setY('B'),
+                    (new Shot())->setX(3)->setY('C'),
+                    (new Shot())->setX(3)->setY('D'),
+                    (new Shot())->setX(3)->setY('A'),
+                ],
+                8,
+                8,
+                (new HitSeries(8, 8)),
             ],
         ];
     }
