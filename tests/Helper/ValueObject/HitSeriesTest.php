@@ -22,11 +22,11 @@ class HitSeriesTest extends TestCase
     public function testOrientation(array $hits, bool $expIsHorizontal, bool $expIsVertical)
     {
         $hitSeries = (new HitSeries(8, 8))->setHits($hits);
-
+        
         $this->assertSame($expIsHorizontal, $hitSeries->isHorizontal());
         $this->assertSame($expIsVertical, $hitSeries->isVertical());
     }
-
+    
     public function provideHitSeriesForOrientation()
     {
         return [
@@ -62,7 +62,7 @@ class HitSeriesTest extends TestCase
             ],
         ];
     }
-
+    
     /**
      * @dataProvider provideHitSeriesForBelong
      * @testdox      If only hits are added to the series, that really belong
@@ -166,6 +166,79 @@ class HitSeriesTest extends TestCase
                     (new Shot())->setX(2)->setY('D'),
                     (new Shot())->setX(2)->setY('E'),
                 ],
+            ],
+            'another' => [
+                [
+                    (new Shot())->setX(4)->setY('C'),
+                    (new Shot())->setX(5)->setY('C'),
+                    (new Shot())->setX(6)->setY('C')
+                ],
+                [
+                    (new Shot())->setX(4)->setY('C'),
+                    (new Shot())->setX(5)->setY('C'),
+                    (new Shot())->setX(6)->setY('C')
+                ],
+            ],
+        ];
+    }
+    
+    /**
+     * @dataProvider provideHitSeriesForSurround
+     * @testdox      If correct surrounding hits are returned
+     *
+     * @param Shot[]    $shot
+     * @param Shot|null $left
+     * @param Shot|null $right
+     * @param Shot|null $top
+     * @param Shot|null $bottom
+     */
+    public function testSurroundingShots(array $hits, ?Shot $left, ?Shot $right, ?Shot $top, ?Shot $bottom)
+    {
+        $hitSeries = (new HitSeries(8, 8))->setHits($hits);
+        
+        $this->assertEquals($left, $hitSeries->getNextLeft());
+        $this->assertEquals($right, $hitSeries->getNextRight());
+        $this->assertEquals($top, $hitSeries->getNextTop());
+        $this->assertEquals($bottom, $hitSeries->getNextBottom());
+    }
+    
+    public function provideHitSeriesForSurround()
+    {
+        return [
+            'vertical on top length 2' => [
+                [(new Shot())->setX(2)->setY('A'), (new Shot())->setX(2)->setY('B'),],
+                null, // left
+                null, // right
+                null, // top
+                (new Shot())->setX(2)->setY('C'), // bottom
+            ],
+            'vertical on top length 4' => [
+                [(new Shot())->setX(2)->setY('A'), (new Shot())->setX(2)->setY('B'),(new Shot())->setX(2)->setY('C'), (new Shot())->setX(2)->setY('D')],
+                null, // left
+                null, // right
+                null, // top
+                (new Shot())->setX(2)->setY('E'), // bottom
+            ],
+            'horizontal in the middle length 2' => [
+                [(new Shot())->setX(5)->setY('C'), (new Shot())->setX(6)->setY('C'),],
+                (new Shot())->setX(4)->setY('C'), // left
+                (new Shot())->setX(7)->setY('C'), // right
+                null, // top
+                null, // bottom
+            ],
+            'horizontal in the middle length 3' => [
+                [(new Shot())->setX(4)->setY('C'), (new Shot())->setX(5)->setY('C'),(new Shot())->setX(6)->setY('C'),],
+                (new Shot())->setX(3)->setY('C'), // left
+                (new Shot())->setX(7)->setY('C'), // right
+                null, // top
+                null, // bottom
+            ],
+            'vertical additional 2 length' => [
+                [(new Shot())->setX(6)->setY('E')->setHit(true), (new Shot())->setX(6)->setY('F')->setHit(true),],
+                null, // left
+                null, // right
+                (new Shot())->setX(6)->setY('D'), // top
+                (new Shot())->setX(6)->setY('G'), // bottom
             ],
         ];
     }

@@ -27,7 +27,7 @@ class HitSeries implements \Countable
         }
         
         usort($this->hits, function ($a, $b) {
-            return strcasecmp((string) $a, (string) $b);
+            return strcasecmp((string)$a, (string)$b);
         });
         
         return $this;
@@ -99,6 +99,85 @@ class HitSeries implements \Countable
         }
         
         return $this->hits[0]->getX() === $this->hits[1]->getX();
+    }
+    
+    public function getNextRight(): ?Shot
+    {
+        $end = $this->getEnd();
+    
+        // we are already at the right edge
+        if ($end->getX() === $this->width) {
+            return null;
+        }
+        
+        if (!$this->isHorizontal() && !$this->isSingle()) {
+            return null;
+        }
+        
+        return (new Shot())->setY($end->getY())->setX($end->getX() + 1);
+    }
+    
+    public function getNextLeft(): ?Shot
+    {
+        $start = $this->getStart();
+    
+        // we are already at the left edge
+        if ($start->getX() === 1) {
+            return null;
+        }
+    
+        if (!$this->isHorizontal() && !$this->isSingle()) {
+            return null;
+        }
+        
+        return (new Shot())->setY($start->getY())->setX($start->getX() - 1);
+    }
+    
+    public function getNextTop(): ?Shot
+    {
+        $start = $this->getStart();
+    
+        // we are already at the top
+        if ($start->getYAscii() === 1) {
+            return null;
+        }
+    
+        if (!$this->isVertical() && !$this->isSingle()) {
+            return null;
+        }
+        
+        return (new Shot())->setX($start->getX())->setYAscii($start->getYAscii() - 1);
+    }
+    
+    public function getNextBottom(): ?Shot
+    {
+        $end = $this->getEnd();
+        
+        // we are already at the top
+        if ($end->getYAscii() === $this->height) {
+            return null;
+        }
+    
+        if (!$this->isVertical() && !$this->isSingle()) {
+            return null;
+        }
+        
+        return (new Shot())->setX($end->getX())->setYAscii($end->getYAscii() + 1);
+    }
+    
+    public function getEnd(): Shot
+    {
+        return end($this->hits);
+    }
+    
+    public function getStart(): Shot
+    {
+        return reset($this->hits);
+    }
+    
+    public function isSingle()
+    {
+        return $this->count() === 1;
     }
     
     public function count()
