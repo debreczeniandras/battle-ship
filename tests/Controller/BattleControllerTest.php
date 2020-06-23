@@ -146,7 +146,7 @@ class BattleControllerTest extends WebTestCase
                 false,
                 'This ship is already added to the board',
             ],
-            'ship with id carrier has wrong size (6 instead of 5) - returns 400' => [
+            'ship with id carrier has wrong size (should be 5 instead of 6) - returns 400' => [
                 [
                     [
                         'id' => 'A',
@@ -257,7 +257,7 @@ class BattleControllerTest extends WebTestCase
                 false,
                 'person \"A\" already exists',
             ],
-            'wrong id for a user (instead of A or B) - returns 400' => [
+            'wrong id for a user (should be A or B) - returns 400' => [
                 [
                     [
                         'id' => 'A',
@@ -272,7 +272,7 @@ class BattleControllerTest extends WebTestCase
                 false,
                 'This value is not valid',
             ],
-            'wrong player type - returns 400' => [
+            'wrong player type (should be 0 or 1) - returns 400' => [
                 [
                     [
                         'id' => 'A',
