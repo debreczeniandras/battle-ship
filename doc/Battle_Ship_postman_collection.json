@@ -59,8 +59,48 @@
 		},
 		{
 			"name": "Get infos about the battle",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/battles/:id",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"battles",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{battleId}}",
+							"description": "(Required) "
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a Battle",
+			"request": {
+				"method": "DELETE",
 				"header": [
 					{
 						"key": "Accept",
@@ -572,13 +612,13 @@
 	],
 	"variable": [
 		{
-			"id": "a9e006b9-e920-44b3-a2e5-3a0c4abb6986",
+			"id": "4cc7e3b6-805d-4187-bd40-dc4b512e510d",
 			"key": "baseUrl",
 			"value": "api.battle.local",
 			"type": "string"
 		},
 		{
-			"id": "860910c1-a0a3-479a-a941-ede4eda569ce",
+			"id": "6cc25ddf-3ed5-43ea-86d7-23166a16a71f",
 			"key": "battleId",
 			"value": "",
 			"type": "string"
