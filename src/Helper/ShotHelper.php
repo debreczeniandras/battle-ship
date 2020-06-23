@@ -26,6 +26,14 @@ final class ShotHelper
         return static::getRandomShot($battle, $player);
     }
     
+    /**
+     * Collect a list of last hits into a series to better get a shot around it.
+     *
+     * @param Battle $battle
+     * @param Player $player
+     *
+     * @return HitSeries
+     */
     private static function getHitSeries(Battle $battle, Player $player): HitSeries
     {
         $playerShots   = $player->getGrid()->getShots()->toArray();
@@ -38,11 +46,13 @@ final class ShotHelper
                 break;
             }
             
+            // collect the last hits in a series
             if ($item->isHit()) {
                 $lastHitSeries->addHit($item);
             }
             
             $item = prev($playerShots);
+            // cycle should run until we reach a hit that was sunk
         } while ($item && !$item->isSunk());
         
         return $lastHitSeries;

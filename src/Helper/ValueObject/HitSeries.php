@@ -26,6 +26,10 @@ class HitSeries implements \Countable
             }
         }
         
+        usort($this->hits, function ($a, $b) {
+            return strcasecmp((string) $a, (string) $b);
+        });
+        
         return $this;
     }
     

@@ -113,4 +113,60 @@ class HitSeriesTest extends TestCase
             ],
         ];
     }
+    
+    /**
+     * @dataProvider provideHitSeriesForSort
+     * @testdox      If hits that are added to the series get correctly sorted
+     *
+     * @param Shot[] $hits
+     * @param array  $expHits
+     */
+    public function testHitsAreSorted(array $hits, array $expHits)
+    {
+        $hitSeries = (new HitSeries(8, 8))->setHits($hits);
+        
+        $this->assertEquals($expHits, $hitSeries->getHits());
+    }
+    
+    public function provideHitSeriesForSort()
+    {
+        return [
+            'correct' => [
+                [
+                    (new Shot())->setX(2)->setY('A'),
+                    (new Shot())->setX(2)->setY('B'),
+                ],
+                [
+                    (new Shot())->setX(2)->setY('A'),
+                    (new Shot())->setX(2)->setY('B'),
+                ],
+            ],
+            'reverse' => [
+                [
+                    (new Shot())->setX(2)->setY('B'),
+                    (new Shot())->setX(2)->setY('A'),
+                ],
+                [
+                    (new Shot())->setX(2)->setY('A'),
+                    (new Shot())->setX(2)->setY('B'),
+                ],
+            ],
+            'random' => [
+                [
+                    (new Shot())->setX(2)->setY('E'),
+                    (new Shot())->setX(2)->setY('A'),
+                    (new Shot())->setX(2)->setY('C'),
+                    (new Shot())->setX(2)->setY('D'),
+                    (new Shot())->setX(2)->setY('B'),
+                ],
+                [
+                    (new Shot())->setX(2)->setY('A'),
+                    (new Shot())->setX(2)->setY('B'),
+                    (new Shot())->setX(2)->setY('C'),
+                    (new Shot())->setX(2)->setY('D'),
+                    (new Shot())->setX(2)->setY('E'),
+                ],
+            ],
+        ];
+    }
 }
