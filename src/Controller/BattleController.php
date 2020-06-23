@@ -115,6 +115,34 @@ class BattleController extends AbstractFOSRestController
     }
     
     /**
+     * Delete Battle
+     *
+     * @param Battle        $battle
+     *
+     * @param BattleManager $manager
+     *
+     * @return Response
+     *
+     * @ParamConverter(name="battle", options={"requestParam": "id"})
+     * @Rest\Delete("/{id}", name="delete_battle")
+     * @SWG\Response(
+     *     response=204,
+     *     description="The battle has been deleted."
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="When a battle with this id can not be found."
+     * )
+     * @SWG\Tag(name="Battle")
+     */
+    public function deleteBattle(Battle $battle, BattleManager $manager): Response
+    {
+        $manager->remove($battle);
+        
+        return $this->handleView($this->view(null, 204)->setFormat('json'));
+    }
+    
+    /**
      * Set up players for this Battle.
      *
      * @param Battle                $battle

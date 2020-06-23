@@ -46,6 +46,11 @@ class BattleManager
         return $battle;
     }
     
+    public function remove(Battle $battle): bool
+    {
+        return (bool) $this->redis->remove($battle->getId());
+    }
+    
     public function store(Battle $battle, $contextGroup)
     {
         $serialized = $this->serializer->serialize($battle, 'json', ['groups' => [$contextGroup]]);
