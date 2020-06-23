@@ -14,6 +14,14 @@ final class ShotHelper
         // helper class, should not be instantiated
     }
     
+    /**
+     * This method decides if we can have a designated shot  or if we need to fire a random shot.
+     *
+     * @param Battle $battle
+     * @param Player $player
+     *
+     * @return Shot
+     */
     public static function getBestShot(Battle $battle, Player $player)
     {
         $lastHitSeries = static::getHitSeries($battle, $player);
@@ -56,6 +64,15 @@ final class ShotHelper
         return $lastHitSeries;
     }
     
+    /**
+     * We check around the hit series, and we try to fire around it in this order. ['top', 'bottom', 'left', 'right']
+     * This order stands for single shots.
+     *
+     * @param HitSeries $hitSeries
+     * @param Player    $player
+     *
+     * @return Shot
+     */
     private static function getDesignatedShot(HitSeries $hitSeries, Player $player): Shot
     {
         $nextTop    = $hitSeries->getNextTop();

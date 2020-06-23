@@ -1,5 +1,10 @@
 # Documentation
 
+## Computer calculated shots
+
+The tactical business logic is in the [ShotHelper class](../src/Helper/ShotHelper.php).
+
+
 ## Usage of the API
 
 A [Postman Collection](Battle_Ship_postman_collection.json) is available which showcases the workflow described below.
