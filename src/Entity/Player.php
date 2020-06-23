@@ -16,7 +16,7 @@ class Player
      * @var string
      *
      * @Assert\NotBlank()
-     * @Assert\Choice(choices={"A", "B"}, message="Choose a valid player type.")
+     * @Assert\Choice(choices={"A", "B"}, message="That is not a valid player id.")
      * @Serializer\Groups({"Default", "Set", "Status"})
      */
     private $id;
@@ -26,7 +26,7 @@ class Player
      *
      * @var int
      *
-     * @Assert\Choice(choices=Player::PLAYERTYPES, message="Choose a valid player type.")
+     * @Assert\Choice(choices=Player::PLAYERTYPES, message="That is not a valid player type.")
      * @Assert\NotBlank()
      * @Serializer\Groups({"Default", "Set", "Status"})
      */

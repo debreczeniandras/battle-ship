@@ -257,6 +257,21 @@ class BattleControllerTest extends WebTestCase
                 false,
                 'person \"A\" already exists',
             ],
+            'wrong id for a user (instead of A or B) - returns 400' => [
+                [
+                    [
+                        'id' => 'A',
+                        'type' => 1,
+                    ],
+                    [
+                        'id' => 'C',
+                        'type' => 1,
+                    ],
+                ],
+                400,
+                false,
+                'This value is not valid',
+            ],
             'wrong player type - returns 400' => [
                 [
                     [
