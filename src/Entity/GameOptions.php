@@ -11,26 +11,22 @@ class GameOptions
     /**
      * The width of the board.
      *
-     * @var int
-     *
      * @Assert\Type("integer")
      * @Assert\Range(min="8", max="15", minMessage="This value should be greater than 8")
      * @SWG\Property(default="8")
      * @Serializer\Groups({"Default", "Init", "Status"})
      */
-    private $width = 8;
+    private int $width = 8;
     
     /**
      * The height of the board.
-     *
-     * @var int
      *
      * @Assert\Type("integer")
      * @Assert\Range(min="8", max="15")
      * @SWG\Property(default="8")
      * @Serializer\Groups({"Default", "Init", "Status"})
      */
-    private $height = 8;
+    private int $height = 8;
     
     /**
      * @return int

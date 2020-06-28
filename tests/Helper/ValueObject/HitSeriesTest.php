@@ -7,11 +7,13 @@ use App\Helper\ValueObject\HitSeries;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @testdox Hit Series Helper
+ * @coversDefaultClass \App\Helper\ValueObject\HitSeries
  */
 class HitSeriesTest extends TestCase
 {
     /**
+     * @covers ::isHorizontal
+     * @covers ::isVertical
      * @dataProvider provideHitSeriesForOrientation
      * @testdox      If Orientation is correctly reported
      *
@@ -151,7 +153,7 @@ class HitSeriesTest extends TestCase
                     (new Shot())->setX(2)->setY('B'),
                 ],
             ],
-            'random' => [
+            'random vertical' => [
                 [
                     (new Shot())->setX(2)->setY('E'),
                     (new Shot())->setX(2)->setY('A'),
@@ -167,16 +169,20 @@ class HitSeriesTest extends TestCase
                     (new Shot())->setX(2)->setY('E'),
                 ],
             ],
-            'another' => [
+            'random horizontal' => [
                 [
+                    (new Shot())->setX(2)->setY('C'),
+                    (new Shot())->setX(6)->setY('C'),
                     (new Shot())->setX(4)->setY('C'),
                     (new Shot())->setX(5)->setY('C'),
-                    (new Shot())->setX(6)->setY('C')
+                    (new Shot())->setX(3)->setY('C'),
                 ],
                 [
+                    (new Shot())->setX(2)->setY('C'),
+                    (new Shot())->setX(3)->setY('C'),
                     (new Shot())->setX(4)->setY('C'),
                     (new Shot())->setX(5)->setY('C'),
-                    (new Shot())->setX(6)->setY('C')
+                    (new Shot())->setX(6)->setY('C'),
                 ],
             ],
         ];
@@ -184,9 +190,9 @@ class HitSeriesTest extends TestCase
     
     /**
      * @dataProvider provideHitSeriesForSurround
-     * @testdox      If correct surrounding hits are returned
+     * @testdox      Correct surrounding hits are returned
      *
-     * @param Shot[]    $shot
+     * @param Shot[] $hits
      * @param Shot|null $left
      * @param Shot|null $right
      * @param Shot|null $top
@@ -213,7 +219,10 @@ class HitSeriesTest extends TestCase
                 (new Shot())->setX(2)->setY('C'), // bottom
             ],
             'vertical on top length 4' => [
-                [(new Shot())->setX(2)->setY('A'), (new Shot())->setX(2)->setY('B'),(new Shot())->setX(2)->setY('C'), (new Shot())->setX(2)->setY('D')],
+                [(new Shot())->setX(2)->setY('A'),
+                 (new Shot())->setX(2)->setY('B'),
+                 (new Shot())->setX(2)->setY('C'),
+                 (new Shot())->setX(2)->setY('D')],
                 null, // left
                 null, // right
                 null, // top
@@ -227,7 +236,7 @@ class HitSeriesTest extends TestCase
                 null, // bottom
             ],
             'horizontal in the middle length 3' => [
-                [(new Shot())->setX(4)->setY('C'), (new Shot())->setX(5)->setY('C'),(new Shot())->setX(6)->setY('C'),],
+                [(new Shot())->setX(4)->setY('C'), (new Shot())->setX(5)->setY('C'), (new Shot())->setX(6)->setY('C'),],
                 (new Shot())->setX(3)->setY('C'), // left
                 (new Shot())->setX(7)->setY('C'), // right
                 null, // top

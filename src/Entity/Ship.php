@@ -68,19 +68,11 @@ class Ship
         return $this;
     }
     
-    /**
-     * @return Coordinate
-     */
     public function getStart(): ?Coordinate
     {
         return $this->start;
     }
     
-    /**
-     * @param Coordinate $start
-     *
-     * @return Ship
-     */
     public function setStart(Coordinate $start): Ship
     {
         $this->start = $start;
@@ -88,19 +80,11 @@ class Ship
         return $this;
     }
     
-    /**
-     * @return Coordinate
-     */
     public function getEnd(): ?Coordinate
     {
         return $this->end;
     }
     
-    /**
-     * @param Coordinate $end
-     *
-     * @return Ship
-     */
     public function setEnd(Coordinate $end): Ship
     {
         $this->end = $end;
@@ -109,9 +93,7 @@ class Ship
     }
     
     /**
-     * A ship is diagonal, if either start.x and start.y OR end.y end.y are not the same
-     *
-     * @return bool
+     * A ship is diagonal, if either `start.x` and `end.x` OR `start.y` and `end.y` are the same
      */
     public function isShipDiagonal(): bool
     {
@@ -139,8 +121,6 @@ class Ship
     
     /**
      * The length can be determined based on the subtraction of both start and end coordinates
-     *
-     * @return int
      */
     public function getLength(): int
     {

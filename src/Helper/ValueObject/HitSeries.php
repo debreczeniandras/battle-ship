@@ -26,9 +26,7 @@ class HitSeries implements \Countable
             }
         }
         
-        usort($this->hits, function ($a, $b) {
-            return strcasecmp((string)$a, (string)$b);
-        });
+        usort($this->hits, fn ($a, $b) => $a <=> $b);
         
         return $this;
     }
@@ -110,6 +108,7 @@ class HitSeries implements \Countable
             return null;
         }
         
+        // this shot has only meaning if the hitseries is horizontal OR consists of a single element
         if (!$this->isHorizontal() && !$this->isSingle()) {
             return null;
         }
@@ -126,6 +125,7 @@ class HitSeries implements \Countable
             return null;
         }
     
+        // this shot has only meaning if the hitseries is horizontal OR consists of a single element
         if (!$this->isHorizontal() && !$this->isSingle()) {
             return null;
         }
@@ -142,6 +142,7 @@ class HitSeries implements \Countable
             return null;
         }
     
+        // this shot has only meaning if the hitseries is vertical OR consists of a single element
         if (!$this->isVertical() && !$this->isSingle()) {
             return null;
         }
@@ -158,6 +159,7 @@ class HitSeries implements \Countable
             return null;
         }
     
+        // this shot has only meaning if the hitseries is vertical OR consists of a single element
         if (!$this->isVertical() && !$this->isSingle()) {
             return null;
         }
@@ -175,12 +177,12 @@ class HitSeries implements \Countable
         return reset($this->hits);
     }
     
-    public function isSingle()
+    public function isSingle() : bool
     {
         return $this->count() === 1;
     }
     
-    public function count()
+    public function count(): int
     {
         return count($this->hits);
     }

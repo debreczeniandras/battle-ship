@@ -19,14 +19,14 @@ class Grid
      * @Assert\Count(min="5", max="5")
      * @Assert\Valid()
      */
-    private $ships;
+    private iterable $ships;
     
     /**
      * @var Shot[]
      *
      * @Serializer\Groups({"Default", "Status"})
      */
-    private $shots;
+    private iterable $shots;
     
     public function __construct()
     {
@@ -51,7 +51,7 @@ class Grid
     /**
      * @return Ship[]|ArrayCollection
      */
-    public function getShips()
+    public function getShips(): iterable
     {
         return $this->ships;
     }
@@ -61,7 +61,7 @@ class Grid
      *
      * @return Grid
      */
-    public function setShips(?array $ships = []): Grid
+    public function setShips(?iterable $ships = []): Grid
     {
         $this->ships = new ArrayCollection($ships);
         
@@ -71,7 +71,7 @@ class Grid
     /**
      * @return Shot[]|ArrayCollection
      */
-    public function getShots()
+    public function getShots(): iterable
     {
         return $this->shots;
     }
@@ -81,7 +81,7 @@ class Grid
      *
      * @return Grid
      */
-    public function setShots(?array $shots = []): Grid
+    public function setShots(?iterable $shots = []): Grid
     {
         $this->shots = new ArrayCollection($shots);
         
@@ -90,9 +90,8 @@ class Grid
     
     public function hasShot(Shot $shot): bool
     {
-        return $this->shots->exists(function ($key, Shot $item) use ($shot) {
-            return $item->getX() === $shot->getX() && $item->getY() === $shot->getY();
-        });
+        return $this->shots->exists(
+            fn($key, Shot $item) => $item->getX() === $shot->getX() && $item->getY() === $shot->getY());
     }
     
     /**
@@ -105,7 +104,7 @@ class Grid
      *
      * @SWG\Items(type="string")
      */
-    public function getShipCoordinates(Ship $exclude = null)
+    public function getShipCoordinates(Ship $exclude = null): iterable
     {
         $coords = [];
         
@@ -125,12 +124,12 @@ class Grid
      *
      * @SWG\Items(type="string")
      */
-    public function getShotCoordinates()
+    public function getShotCoordinates(): iterable
     {
         $coords = [];
         
         foreach ($this->shots as $shot) {
-            $coords[] = (string) $shot;
+            $coords[] = (string)$shot;
         }
         
         return $coords;

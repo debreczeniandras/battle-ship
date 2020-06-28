@@ -11,22 +11,16 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 class Battle
 {
     /**
-     * @var string
-     *
      * @Serializer\Groups({"Default", "Init", "Status"})
      */
-    private $id;
+    private string $id;
     
     /**
-     * The game options
-     *
-     * @var GameOptions
-     *
      * @Assert\NotBlank()
      * @Assert\Valid()
      * @Serializer\Groups({"Default", "Init", "Status"})
      */
-    private $options;
+    private GameOptions $options;
     
     /**
      * The Players of the battle
@@ -37,16 +31,14 @@ class Battle
      * @Assert\Valid()
      * @Serializer\Groups({"Default", "Status"})
      */
-    private $players;
+    private iterable $players;
     
     /**
-     * The state of the battle
-     *
-     * @var string
+     * The state of the battle. This is also the marking store for our state machine.
      *
      * @Serializer\Groups({"Default", "Init", "Status"})
      */
-    private $state = 'waiting';
+    private string $state = 'waiting';
     
     public function __construct()
     {
@@ -56,7 +48,7 @@ class Battle
     /**
      * @return Player[]|ArrayCollection
      */
-    public function getPlayers()
+    public function getPlayers(): iterable
     {
         return $this->players;
     }
@@ -80,9 +72,7 @@ class Battle
      */
     public function addPlayer(Player $player): Battle
     {
-        if (!$this->players->exists(function ($key, Player $item) use ($player) {
-            return $item->getId() == $player->getId();
-        })) {
+        if (!$this->hasPlayer($player)) {
             $this->players->add($player);
         }
         
@@ -96,24 +86,14 @@ class Battle
      */
     public function hasPlayer(Player $player): bool
     {
-        return $this->players->exists(function ($key, Player $item) use ($player) {
-            return $item->getId() == $player->getId();
-        });
+        return $this->players->exists(fn($key, Player $item) => $item->getId() == $player->getId());
     }
     
-    /**
-     * @return string
-     */
     public function getState(): string
     {
         return $this->state;
     }
     
-    /**
-     * @param string $state
-     *
-     * @return Battle
-     */
     public function setState(string $state): Battle
     {
         $this->state = $state;
@@ -121,19 +101,11 @@ class Battle
         return $this;
     }
     
-    /**
-     * @return GameOptions
-     */
     public function getOptions(): GameOptions
     {
         return $this->options;
     }
     
-    /**
-     * @param GameOptions $options
-     *
-     * @return Battle
-     */
     public function setOptions(GameOptions $options): Battle
     {
         $this->options = $options;
@@ -141,21 +113,13 @@ class Battle
         return $this;
     }
     
-    /**
-     * @param $hash
-     *
-     * @return Battle
-     */
-    public function setId($hash): Battle
+    public function setId(string $hash): Battle
     {
         $this->id = $hash;
         
         return $this;
     }
     
-    /**
-     * @return string
-     */
     public function getId(): string
     {
         return $this->id;
@@ -177,9 +141,7 @@ class Battle
      */
     public function getOpponent(Player $player): Player
     {
-        return $this->getPlayers()->filter(function (Player $item) use ($player) {
-            return $item->getId() !== $player->getId();
-        })->first();
+        return $this->getPlayers()->filter(fn (Player $item) => $item->getId() !== $player->getId())->first();
     }
     
     public static function createNewFromOptions(GameOptions $options): Battle

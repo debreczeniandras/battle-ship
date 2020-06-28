@@ -7,15 +7,11 @@ use Symfony\Component\Serializer\Annotation as Serializer;
 class Shot extends Coordinate
 {
     /**
-     * @var bool
-     *
      * @Serializer\Groups({"Status", "Default"})
      */
     private bool $hit = false;
     
     /**
-     * @var bool
-     *
      * @Serializer\Groups({"Status", "Default"})
      */
     private bool $sunk = false;

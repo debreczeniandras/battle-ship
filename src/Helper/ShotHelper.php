@@ -22,7 +22,7 @@ final class ShotHelper
      *
      * @return Shot
      */
-    public static function getBestShot(Battle $battle, Player $player)
+    public static function getBestShot(Battle $battle, Player $player): Shot
     {
         $lastHitSeries = static::getHitSeries($battle, $player);
         if (!$lastHitSeries->count()) {
@@ -33,7 +33,7 @@ final class ShotHelper
     }
     
     /**
-     * Collect a list of last hits into a series to better get a shot around it.
+     * Collect a list of last hits into a series to get a better shot around it.
      *
      * @param Battle $battle
      * @param Player $player
@@ -66,7 +66,7 @@ final class ShotHelper
     
     /**
      * We check around the hit series, and we try to fire around it in this order. ['top', 'bottom', 'left', 'right']
-     * This order stands for single shots.
+     * This order stands for single hits which can not yet be horizontal or vertical.
      *
      * @param HitSeries $hitSeries
      * @param Player    $player
@@ -107,7 +107,7 @@ final class ShotHelper
             $x = rand(1, $width);
             $y = rand(1, $height);
             
-            $shot = (new Shot())->setX($x)->setY(chr(64 + $y));
+            $shot = (new Shot())->setX($x)->setYAscii($y);
         } while ($player->getGrid()->hasShot($shot));
         
         return $shot;

@@ -32,8 +32,6 @@ final class GridHelper
             
             $layout = self::LAYOUT[rand(0, 1)];
             
-            // define the start position of the ship
-            
             do {
                 // VERTICAL
                 // x can be any random number up to the width of the grid
@@ -54,7 +52,7 @@ final class GridHelper
                 
                 $ship->setStart($start);
                 $ship->setEnd($end);
-            } while ($grid->isShipOverlapping($ship));
+            } while ($grid->isShipOverlapping($ship) || $battle->isShipOffTheBoard($ship));
             
             $grid->addShip($ship);
         }

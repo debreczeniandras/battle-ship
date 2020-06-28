@@ -21,7 +21,7 @@ final class ShipHelper
      *
      * @return Coordinate
      */
-    public static function calcEnd(Coordinate $start, $layout, $shipId)
+    public static function calcEnd(Coordinate $start, $layout, $shipId): Coordinate
     {
         $endCoordinate = new Coordinate();
         $length        = Ship::SHIPS[$shipId];
@@ -29,7 +29,7 @@ final class ShipHelper
         switch ($layout) {
             case GridHelper::VERTICAL:
                 $endCoordinate->setX($start->getX());
-                $endCoordinate->setYAscii($start->getYAscii() + ($length -1));
+                $endCoordinate->setYAscii($start->getYAscii() + ($length - 1));
                 
                 break;
             default:

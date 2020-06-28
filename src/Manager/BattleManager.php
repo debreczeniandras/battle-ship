@@ -15,20 +15,23 @@ use SymfonyBundles\RedisBundle\Redis\ClientInterface;
 
 class BattleManager
 {
-    private ClientInterface      $redis;
-    private SerializerInterface  $serializer;
+    private ClientInterface       $redis;
+    private SerializerInterface   $serializer;
     private BattleWorkflowService $workflow;
     
-    public function __construct(ClientInterface $redis, SerializerInterface $serializer, BattleWorkflowService $workflow)
-    {
-        $this->redis      = $redis;
+    public function __construct(
+        ClientInterface $redis,
+        SerializerInterface $serializer,
+        BattleWorkflowService $workflow
+    ) {
+        $this->redis = $redis;
         $this->serializer = $serializer;
-        $this->workflow   = $workflow;
+        $this->workflow = $workflow;
     }
     
     public function findById($id, $contextGroups = []): Battle
     {
-        $data    = $this->redis->get($id);
+        $data = $this->redis->get($id);
         
         if (is_null($data)) {
             throw new NotFoundHttpException('This Battle does not exist');
@@ -48,16 +51,16 @@ class BattleManager
     
     public function remove(Battle $battle): bool
     {
-        return (bool) $this->redis->remove($battle->getId());
+        return (bool)$this->redis->remove($battle->getId());
     }
     
-    public function store(Battle $battle, $contextGroup)
+    public function store(Battle $battle, $contextGroup): void
     {
         $serialized = $this->serializer->serialize($battle, 'json', ['groups' => [$contextGroup]]);
         $this->redis->set($battle->getId(), $serialized);
     }
     
-    public function shoot(Battle $battle, string $playerId, Shot $shot)
+    public function shoot(Battle $battle, string $playerId, Shot $shot): Shot
     {
         // check state of the battle
         if ($battle->getState() !== 'playing') {
@@ -96,7 +99,7 @@ class BattleManager
         // set state of the players
         $this->workflow->apply($player, 'shoot');
         $this->workflow->apply($opponent, 'duck');
-    
+        
         // check win
         if ($this->hasWon($battle, $player)) {
             $shot->setWon(true);

@@ -50,19 +50,11 @@ class Player
      */
     private $state = 'shooting';
     
-    /**
-     * @return string
-     */
     public function getId(): ?string
     {
         return $this->id;
     }
     
-    /**
-     * @param string $id
-     *
-     * @return Player
-     */
     public function setId(string $id): Player
     {
         $this->id = $id;
@@ -70,19 +62,11 @@ class Player
         return $this;
     }
     
-    /**
-     * @return int
-     */
     public function getType(): int
     {
         return $this->type;
     }
     
-    /**
-     * @param int $type
-     *
-     * @return Player
-     */
     public function setType(int $type): Player
     {
         $this->type = $type;
@@ -90,19 +74,11 @@ class Player
         return $this;
     }
     
-    /**
-     * @return Grid
-     */
     public function getGrid(): ?Grid
     {
         return $this->grid;
     }
     
-    /**
-     * @param Grid $grid
-     *
-     * @return Player
-     */
     public function setGrid(Grid $grid): Player
     {
         $this->grid = $grid;
@@ -110,19 +86,11 @@ class Player
         return $this;
     }
     
-    /**
-     * @return string
-     */
     public function getState(): string
     {
         return $this->state;
     }
     
-    /**
-     * @param string $state
-     *
-     * @return Player
-     */
     public function setState(string $state): Player
     {
         $this->state = $state;
