@@ -1,37 +1,8 @@
-# Bootstrap Application with ansible
+# Bootstrap Application with ansible (linux)
 
-## Prerequisites and steps for linux
+## Install Ansible and pip
 
-Install the following requirements on your system:
-
-(This only needs to be done once.)
-
-* docker
-* docker-compose
-* docker should run as a non-root user      
-* pip & ansible (see below)
-
-### Install pip & ansible
-
-(This only needs to be done once.)
-
-Install these libraries first (linux): 
-    
-    sudo apt install python-dev python3-dev build-essential python
-
-Install pip and then ansible globally (mind the SUDO)
-
-    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-    sudo -H python get-pip.py
-    sudo -H pip install ansible
-    rm get-pip.py
-
-
-## Set up Ansible project requirements
-
-(This only needs to be done once.)
-
-    pip install -r etc/ansible/requirements.txt --user
+    sudo apt install ansible python3-pip
 
 ## Execute the playbook
 
@@ -56,7 +27,7 @@ Sensible defaults are already provided, which you may accept by clicking Enter.
 
 ## Ansible on MAC
 
-The apache playbook is completely ignored on other systems than Linux.
+Some of the playbooks are completely ignored on other systems than Linux.
 
 That means the playbook can be executed without elevated privileges:
   

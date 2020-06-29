@@ -2,11 +2,16 @@
   hosts: localhost
   connection: local
   tasks:
-    - name: Build Docker Compose
+    - name: Install dependencies
+      pip:
+        name:
+          - docker
+          - docker-compose
+    - name: Start Application with docker compose up
       docker_compose:
         project_src: ../../
         build: yes
-    - name: Install backend dependencies
+    - name: Install dependencies
       command: docker-compose run --rm app install --no-interaction
       args:
         chdir: ../../
